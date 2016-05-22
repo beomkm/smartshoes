@@ -19,7 +19,7 @@ int[] gyroZ_arr;
 
 void setup()
 {
-  size(1000, 600);
+  size(1400, 600);
   port = new Serial(this, "COM4", 9600);
   accX_arr = new int[width];
   accY_arr = new int[width];
@@ -57,28 +57,29 @@ void draw()
     background(255, 255, 255);
 
     fill(255, 0, 0);
-    text("accX", 50, 50);
-    text(accX, 100, 50);
+    textSize(26);
+    text("Accel X", 20, height/2+29);
+    text(accX, 120, height/2+29);
 
     fill(0, 192, 0);
-    text("accY", 50, 100);
-    text(accY, 100, 100);
+    text("Y", 220, height/2+29);
+    text(accY, 240, height/2+29);
 
     fill(0, 0, 255);
-    text("accZ", 50, 150);
-    text(accZ, 100, 150);
+    text("Z", 340, height/2+29);
+    text(accZ, 360, height/2+29);
 
     fill(255, 0, 0);
-    text("gyroX", 150, 50);
-    text(gyroX, 200, 50);
+    text("Gyro  X", 20, height/2-12);
+    text(gyroX, 120, height/2-12);
 
     fill(0, 192, 0);
-    text("gyroY", 150, 100);
-    text(gyroY, 200, 100);
+    text("Y", 220, height/2-12);
+    text(gyroY, 240, height/2-12);
 
     fill(0, 0, 255);
-    text("gyroZ", 150, 150);
-    text(gyroZ, 200, 150);
+    text("Z", 340, height/2-12);
+    text(gyroZ, 360, height/2-12);
 
     //accX
     for (int i=0; i<width-1; i++)
@@ -86,7 +87,7 @@ void draw()
     accX_arr[width-1] = accX;
     stroke(255, 0, 0);
     for (int x=1; x<width; x++) {
-      line(width-x,   height-1-getAccY(accX_arr[x-1]), width-1-x, height-1-getAccY(accX_arr[x]));
+      line(width-x, height-getAccY(accX_arr[x-1]), width-x, height-getAccY(accX_arr[x]));
     }
 
     //accY
@@ -95,7 +96,7 @@ void draw()
     accY_arr[width-1] = accY;
     stroke(0, 192, 0);
     for (int x=1; x<width; x++) {
-      line(width-x,   height-1-getAccY(accY_arr[x-1]), width-1-x, height-1-getAccY(accY_arr[x]));
+      line(width-x,   height-getAccY(accY_arr[x-1]), width-x, height-getAccY(accY_arr[x]));
     }
 
     //accZ
@@ -104,7 +105,7 @@ void draw()
     accZ_arr[width-1] = accZ;
     stroke(0, 0, 255);
     for (int x=1; x<width; x++) {
-      line(width-x,   height-1-getAccY(accZ_arr[x-1]), width-1-x, height-1-getAccY(accZ_arr[x]));
+      line(width-x,   height-getAccY(accZ_arr[x-1]), width-x, height-getAccY(accZ_arr[x]));
     }
 
     //gyroX
@@ -113,7 +114,7 @@ void draw()
     gyroX_arr[width-1] = gyroX;
     stroke(255, 0, 0);
     for (int x=1; x<width; x++) {
-      line(width-x,   height-1-getGyroY(gyroX_arr[x-1]), width-1-x, height-1-getGyroY(gyroX_arr[x]));
+      line(width-x,   height-getGyroY(gyroX_arr[x-1]), width-x, height-getGyroY(gyroX_arr[x]));
     }
 
     //gyroY
@@ -122,7 +123,7 @@ void draw()
     gyroY_arr[width-1] = gyroY;
     stroke(0, 192, 0);
     for (int x=1; x<width; x++) {
-      line(width-x,   height-1-getGyroY(gyroY_arr[x-1]), width-1-x, height-1-getGyroY(gyroY_arr[x]));
+      line(width-x,   height-getGyroY(gyroY_arr[x-1]), width-x, height-getGyroY(gyroY_arr[x]));
     }
 
     //gyroZ
@@ -131,7 +132,7 @@ void draw()
     gyroZ_arr[width-1] = gyroZ;
     stroke(0, 0, 255);
     for (int x=1; x<width; x++) {
-      line(width-x,   height-1-getGyroY(gyroZ_arr[x-1]), width-1-x, height-1-getGyroY(gyroZ_arr[x]));
+      line(width-x,   height-getGyroY(gyroZ_arr[x-1]), width-x, height-getGyroY(gyroZ_arr[x]));
     }
 
     //base
