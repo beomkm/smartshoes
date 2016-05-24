@@ -1,4 +1,3 @@
-
 import processing.serial.*;
 long now,pre;
 Serial port;
