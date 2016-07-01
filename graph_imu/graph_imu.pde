@@ -2,6 +2,11 @@ import processing.serial.*;
 long now,pre;
 Serial port;
 
+
+int prs1;
+int[] prs1_arr;
+int[] prs1_queue;
+
 int accX;
 int accY;
 int accZ;
@@ -20,19 +25,25 @@ void setup()
 {
   size(1400, 600);
   port = new Serial(this, "COM4", 9600);
+ 
+  prs1_arr = new int[width];
+  prs1_queue = new int[10];
+  
   accX_arr = new int[width];
   accY_arr = new int[width];
   accZ_arr = new int[width];
-  gyroX_arr = new int[width];
-  gyroY_arr = new int[width];
-  gyroZ_arr = new int[width];
+  //gyroX_arr = new int[width];
+  //gyroY_arr = new int[width];
+  //gyroZ_arr = new int[width];
   smooth();
 }
 void draw()
 {
 
-  while (port.available() >= 13) {
+  while (port.available() >= 15) {
     if (port.read() == 's') {
+      prs1 = ((port.read())+(port.read()<<8));
+      
       accX = ((port.read())+(port.read()<<8));
       if(accX > 0x7FFF) accX |= 0xFFFF0000;
       accY = ((port.read())+(port.read()<<8));
@@ -54,6 +65,51 @@ void draw()
   if(now-pre > 0){
     pre = now;
     background(255, 255, 255);
+
+//press
+
+    //prs1
+    for (int i=0; i<width-1; i++) 
+      prs1_arr[i] = prs1_arr[i+1];
+    for (int i=0; i<8; i++) 
+      prs1_queue[i] = prs1_queue[i+1];
+      
+    if(prs1 < 0) {
+      prs1 = prs1_arr[width-1];
+    }
+    
+    prs1_queue[7] = prs1;
+    
+    int avg = 0;
+    for (int i=0; i<8; i++) {
+      avg += prs1_queue[i];
+    }
+    avg /= 8;
+    
+    prs1_arr[width-1] = avg;
+    
+    stroke(255, 0, 0);
+    for (int x=1; x<width; x++) {
+      line(width-x, height-getY(prs1_arr[x-1]), width-x, height-getY(prs1_arr[x]));
+    }
+
+    //base
+    fill(255, 0, 0);
+    textSize(26);
+    text("Press 1", 20, height/2+29);
+    text(prs1, 120, height/2+29);
+
+    strokeWeight(1);
+    stroke(0, 0, 0);
+    line(0, height/4, width, height/4);
+    strokeWeight(3);
+    stroke(0, 0, 0);
+    line(0, height/2, width, height/2);
+    strokeWeight(1);
+    stroke(0, 0, 0);
+    line(0, height/4*3, width, height/4*3);
+//
+
 
     fill(255, 0, 0);
     textSize(26);
@@ -106,7 +162,7 @@ void draw()
     for (int x=1; x<width; x++) {
       line(width-x,   height-getAccY(accZ_arr[x-1]), width-x, height-getAccY(accZ_arr[x]));
     }
-
+/*
     //gyroX
     for (int i=0; i<width-1; i++)
        gyroX_arr[i] = gyroX_arr[i+1];
@@ -133,7 +189,7 @@ void draw()
     for (int x=1; x<width; x++) {
       line(width-x,   height-getGyroY(gyroZ_arr[x-1]), width-x, height-getGyroY(gyroZ_arr[x]));
     }
-
+*/
     //base
     strokeWeight(1);
     stroke(0, 0, 0);
@@ -145,6 +201,10 @@ void draw()
     stroke(0, 0, 0);
     line(0, height/4*3, width, height/4*3);
   }
+}
+
+int getY(int val) {
+  return (int)(val / 180000.0f * height + height/2);
 }
 
 int getAccY(int val) {
