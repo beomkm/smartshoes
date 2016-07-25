@@ -1,1 +1,1 @@
-include ':app', ':junit-3.8.1'
+include ':app', ':junit-3.8.1', ':achartengine-1.0.0'

@@ -19,6 +19,8 @@
         <activity android:name=".InstructionActivity" />
 
         <activity android:name=".MainActivity" />
+
+        <activity android:name=".GraphActivity" />
     </application>
 
 </manifest>
