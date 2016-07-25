@@ -1,0 +1,25 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="start"
+    tools:context="${relativePackage}.${activityClass}" >
+
+    <Button android:id="@+id/btn_start_server"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="START"
+        android:textStyle="bold"
+        android:onClick="onBtnClick"/>
+
+    <TextView android:id="@+id/massage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btn_start_server"
+        android:text="text"
+        android:gravity="center"
+        android:layout_marginTop="20dp"/>
+
+</RelativeLayout>
