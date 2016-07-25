@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Android.iml" filepath="$PROJECT_DIR$/Android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/achartengine-1.0.0/achartengine-1.0.0.iml" filepath="$PROJECT_DIR$/achartengine-1.0.0/achartengine-1.0.0.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/junit-3.8.1/junit-3.8.1.iml" filepath="$PROJECT_DIR$/junit-3.8.1/junit-3.8.1.iml" />
     </modules>
