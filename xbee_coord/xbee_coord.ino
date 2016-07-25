@@ -4,7 +4,8 @@
 //(TX, RX)
 SoftwareSerial BTSerial(6, 7); 
 
-char buf[12]; // "-2147483648\0"
+String str;
+char buf[20];
 byte buffer[1024];
 int bufferPosition; 
 
@@ -12,6 +13,8 @@ int bufferPosition;
 
 int incomingByte = 10000;  
 int rcvData;
+int temp = 0;
+
 
 void setup()
 {
@@ -22,21 +25,19 @@ void setup()
 void loop()
 {
 
-
-    if (Serial.available() > 2) {
-
+    if (Serial.available() >= 20) {
+        Serial.readBytes(buf, 20);
         //incomingByte = Serial.read();
-        rcvData = readInt();
-
-        Serial.print("received : ");
-        Serial.println(rcvData);
-        
+        //rcvData = readInt();
+        Serial.println(Serial.available());
         //BTSerial.write(lowByte(rcvData));
-        itoa(rcvData, buf, 10);
-        BTSerial.write(buf, 12); 
+        //itoa(rcvData, buf, 10);
+        BTSerial.write(buf, 20);
     }
 }
 
+
+/*
 int readInt()
 {
     int result = 0;
@@ -44,6 +45,8 @@ int readInt()
 
     return result;
 }
+*/
+
 
 
 
