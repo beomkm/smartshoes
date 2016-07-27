@@ -4,28 +4,32 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:layout_weight="1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"></LinearLayout>
-
     <TextView
-        android:id="@+id/instruction_tv"
-        android:layout_weight="1"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:text=""
-        />
-
-    <Button
-        android:id="@+id/next_bt"
-        android:layout_gravity="center_horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="OK"/>
+        android:text="가이드 라인"
+        android:id="@+id/textView"
+        android:textSize="35dp"
+        android:layout_gravity="center" />
 
-    <LinearLayout
-        android:layout_weight="1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"></LinearLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="15dp"
+        android:id="@+id/guideView" />
+
+    <ImageView
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:id="@+id/guideImage"
+        android:layout_gravity="center_horizontal"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/startBtn"
+        android:text = "모니터링 시작"
+        android:textSize="20dp"
+        android:onClick="onClicked"
+        android:layout_gravity="center_horizontal"/>
+
 </LinearLayout>

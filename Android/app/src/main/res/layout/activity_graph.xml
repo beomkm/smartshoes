@@ -15,7 +15,7 @@
         android:id="@+id/chart_container"
         android:orientation="vertical"
         android:layout_width="wrap_content"
-        android:layout_height="400dp"
+        android:layout_height="match_parent"
         android:layout_below="@id/title" >
     </LinearLayout>
 

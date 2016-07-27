@@ -1,7 +1,6 @@
 package kr.ac.koreatech.hilab.graduation;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -56,6 +55,7 @@ public class GraphActivity extends Activity {
         defaultRenderer.setChartTitle("Result of Foot Monitoring");
         defaultRenderer.setChartTitleTextSize(20);
         defaultRenderer.setZoomButtonsVisible(false);
+        defaultRenderer.setPanEnabled(false);
 
         LinearLayout chartContainer = (LinearLayout) findViewById(R.id.chart_container);
         // remove any views before u paint the chart
