@@ -3,6 +3,7 @@ package kr.ac.koreatech.hilab.graduation;
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.ColorRes;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -27,7 +28,7 @@ public class GraphActivity extends Activity {
         double[] percent = { 80, 20 };
 
         // Color of each Pie Chart Sections
-        int[] colors = { Color.BLUE, Color.MAGENTA };
+        int[] colors = { getResources().getColor(R.color.colorUsual), getResources().getColor(R.color.colorUnusual)};
 
         // Instantiating CategorySeries to plot Pie Chart
         CategorySeries distributionSeries = new CategorySeries(
@@ -44,7 +45,7 @@ public class GraphActivity extends Activity {
             seriesRenderer.setColor(colors[i]);
             seriesRenderer.setDisplayChartValues(true);
             //Adding colors to the chart
-            defaultRenderer.setBackgroundColor(Color.BLACK);
+            defaultRenderer.setBackgroundColor(getResources().getColor(R.color.colorBack));
             defaultRenderer.setLabelsTextSize(20f);
             defaultRenderer.setLegendTextSize(20f);
             defaultRenderer.setApplyBackgroundColor(true);

@@ -3,9 +3,12 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Android.iml" filepath="$PROJECT_DIR$/Android.iml" />
+<<<<<<< HEAD
+=======
       <module fileurl="file://$PROJECT_DIR$/achartengine-1.0.0/achartengine-1.0.0.iml" filepath="$PROJECT_DIR$/achartengine-1.0.0/achartengine-1.0.0.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/junit-3.8.1/junit-3.8.1.iml" filepath="$PROJECT_DIR$/junit-3.8.1/junit-3.8.1.iml" />
+>>>>>>> 890e06f9162227cd78063249c103d9e281549b54
     </modules>
   </component>
 </project>
