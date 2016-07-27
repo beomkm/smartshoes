@@ -32,6 +32,27 @@ IPAddress serverIP(192, 168, 43, 1);  // Server
 // Initialize the client library
 WiFiClient client;
 
+
+void connectSv() {
+  Serial.println("Connected to wifi.\n");
+  Serial.println("Starting connection...");
+  while(1) {
+    client.flush();
+    client.stop();
+    if (client.connect(serverIP, 12345)) {
+      Serial.println("connected");
+      sendable = 1;
+      break;
+    }
+    else {
+      Serial.println("Couldn't connect to the server!");
+      Serial.println("Reconnect after few second.");
+      delay(SV_RECONN_TIME*1000);
+    }
+  }
+}
+
+
 void setup() {
   Wire.begin();
   Serial.begin(9600);
@@ -51,20 +72,7 @@ void setup() {
     else break;
   }
   
-  Serial.println("Connected to wifi.\n");
-  Serial.println("Starting connection...");
-  while(1) {
-    if (client.connect(serverIP, 12345)) {
-      Serial.println("connected");
-      sendable = 1;
-      break;
-    }
-    else {
-      Serial.println("Couldn't connect to the server!");
-      Serial.println("Reconnect after few second.");
-      delay(AP_RECONN_TIME*1000);
-    }
-  }
+  connectSv();
 }
 
 void loop() {
@@ -122,10 +130,13 @@ void loop() {
   */
 
   if (!client.connected()) {
-    Serial.println();
-    Serial.println("disconnected.");
+    Serial.println("\ndisconnected.");
     client.stop();
-    for(;;);
+    sendable = 0;
+    
+    delay(1000);
+    Serial.println("Trying to reconnect..");
+    connectSv();
   }
-  delay(50);
+  delay(500);
 }
