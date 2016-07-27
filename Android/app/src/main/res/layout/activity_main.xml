@@ -9,8 +9,17 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="kr.ac.koreatech.hilab.graduation.MainActivity">
 
-    <TextView
+    <TextView android:id="@+id/massage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="text"
+        android:gravity="center"
+        android:layout_marginTop="20dp"/>
+    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:text="중지"
+        android:id="@+id/stopBtn"
+        android:gravity="center"
+        android:onClick="onClick"/>
 </RelativeLayout>

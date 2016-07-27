@@ -47,7 +47,7 @@ public class InstructionActivity extends Activity implements View.OnClickListene
     public void onClick(View v) {
         switch(v.getId()){
             case R.id.startBtn :
-                Intent intent = new Intent(InstructionActivity.this, GraphActivity.class);
+                Intent intent = new Intent(InstructionActivity.this, MainActivity.class);
                 startActivity(intent);
                 finish();
         }
