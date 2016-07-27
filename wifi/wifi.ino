@@ -4,6 +4,9 @@
 #include <I2Cdev.h>
 #include <MPU6050.h>
 
+#define AP_RECONN_TIME 4
+#define SV_RECONN_TIME 4
+
 //imu
 MPU6050 accelgyro;
 int ax, ay, az;
@@ -38,23 +41,30 @@ void setup() {
   Serial.print("SSID: ");
   Serial.println(ssid);
   
-  status = WiFi.begin(ssid, pass);
-  if ( status != WL_CONNECTED) { 
-    Serial.println("Couldn't get a wifi connection");
-    // don't do anything else:
-    while(true);
-  } 
-  else {
-    Serial.println("Connected to wifi");
-    Serial.println("\nStarting connection...");
-    // if you get a connection, report back via serial:
-    if (client.connect(serverIP, 12345)) {
-      Serial.println("connected");
-      // Make a HTTP request:
-      sendable = 1;
+  while(1) {
+    status = WiFi.begin(ssid, pass);
+    if (status != WL_CONNECTED) { 
+      Serial.println("Couldn't connect AP!");
+      Serial.println("Reconnect after few second.");
+      delay(AP_RECONN_TIME*1000);
     }
+    else break;
   }
   
+  Serial.println("Connected to wifi.\n");
+  Serial.println("Starting connection...");
+  while(1) {
+    if (client.connect(serverIP, 12345)) {
+      Serial.println("connected");
+      sendable = 1;
+      break;
+    }
+    else {
+      Serial.println("Couldn't connect to the server!");
+      Serial.println("Reconnect after few second.");
+      delay(AP_RECONN_TIME*1000);
+    }
+  }
 }
 
 void loop() {
@@ -71,39 +81,7 @@ void loop() {
   if(sendable) {
     Serial.println(Vo);
     Serial.println(ax);
-    
-    //imu 
-    /*
-    client.write(lowByte(ax) ); 
-    client.write(highByte(ax)); 
-    client.write(lowByte(ay) ); 
-    client.write(highByte(ay)); 
-    client.write(lowByte(az) ); 
-    client.write(highByte(az)); 
-    
-    client.write(lowByte(gx) ); 
-    client.write(highByte(gx)); 
-    client.write(lowByte(gy) ); 
-    client.write(highByte(gy)); 
-    client.write(lowByte(gz) ); 
-    client.write(highByte(gz)); 
-    
-    client.write(lowByte(mx) ); 
-    client.write(highByte(mx)); 
-    client.write(lowByte(my) ); 
-    client.write(highByte(my)); 
-    client.write(lowByte(mz) ); 
-    client.write(highByte(mz)); 
-    
-    //pressure
-    client.write(lowByte((int)Vo));
-    client.write(highByte((int)Vo));
-    */
-    
-    //sprintf(datas,"%ds%ds%ds%d",-1,-2,1,2);
-    //client.write(datas);
-    
-    
+   
     datas[0] = lowByte(ax);
     datas[1] = highByte(ax);
     datas[2] = lowByte(ay);
@@ -121,7 +99,7 @@ void loop() {
     datas[12] = lowByte(mx);
     datas[13] = highByte(mx);
     datas[14] = lowByte(my);
-      datas[15] = highByte(my);
+    datas[15] = highByte(my);
     datas[16] = lowByte(mz);
     datas[17] = highByte(mz);
     
@@ -135,23 +113,19 @@ void loop() {
       if(datas[i]==0) datas[i] = 0x80;
       else if(datas[i]==0x80) datas[i] = 0x81;
     } 
-    
     client.write(datas);
-    
-
   }
   
-  
+  /*
   if (client.available()) {
-
   }
+  */
 
   if (!client.connected()) {
     Serial.println();
-    Serial.println("disconnecting.");
+    Serial.println("disconnected.");
     client.stop();
-    for(;;)
-      ;
+    for(;;);
   }
   delay(50);
 }
