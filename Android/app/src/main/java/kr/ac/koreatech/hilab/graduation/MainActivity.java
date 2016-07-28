@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
                        e.printStackTrace();
                    }
                    int[] buf = new int[20];
-                   int[] data = new int[10];
+                   short[] data = new short[10];
                    int count = 0;
                    while (isConnected) {
                        try {
@@ -76,9 +76,10 @@ public class MainActivity extends AppCompatActivity {
                            if (count >= 20) {
                                msg = "";
                                for (int i = 0; i < 10; i++) {
-                                   data[i] = (buf[i * 2] & 0xFF) | (buf[i * 2 + 1] & 0xFF) << 8;
+                                   data[i] = (short)((buf[i * 2] & 0xFF) | (buf[i * 2 + 1] & 0xFF) << 8);
                                    msg += data[i] + " ";
                                }
+                               Log.d("ttt",msg);
                                count = 0;
                            }
 
@@ -103,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
                            public void run() {
                                // TODO Auto-generated method stub
                                text_msg.setText(msg);
-                               Log.d("ttt",msg);
+
                            }
                        });
 

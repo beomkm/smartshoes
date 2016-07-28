@@ -87,7 +87,7 @@ void loop() {
 
   //sendable = 1;
   if(sendable) {
-    Serial.println(Vo);
+    //Serial.println(Vo);
     Serial.println(ax);
    
     datas[0] = lowByte(ax);
@@ -138,5 +138,5 @@ void loop() {
     Serial.println("Trying to reconnect..");
     connectSv();
   }
-  delay(500);
+  delay(50);
 }
