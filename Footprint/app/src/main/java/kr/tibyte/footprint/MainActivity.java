@@ -255,4 +255,3 @@ class BitmapView extends View{
 
 
 }
-

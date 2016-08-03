@@ -17,7 +17,7 @@ import java.net.Socket;
 
 public class MainActivity extends AppCompatActivity {
 
-    static final int PORT=12345;
+    static final int PORT = 12345;
     ServerSocket serversocket;
     Socket socket;
     DataInputStream is;
@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        text_msg= (TextView)findViewById(R.id.massage);
+        text_msg = (TextView)findViewById(R.id.massage);
     }
 
     @Override
@@ -107,12 +107,11 @@ public class MainActivity extends AppCompatActivity {
 
                            }
                        });
-
                    }//end while
                }//end run()
-               }
-           });
-           mThread.start();
+           }
+        });
+        mThread.start();
     }
 
     @Override

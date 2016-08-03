@@ -58,7 +58,7 @@ void setup() {
   Serial.begin(9600);
   accelgyro.initialize();
   
-  Serial.println("Attempting to connect to WPA network...");
+  Serial.println("Attempting to connect to AP");
   Serial.print("SSID: ");
   Serial.println(ssid);
   
@@ -88,7 +88,7 @@ void loop() {
   //sendable = 1;
   if(sendable) {
     //Serial.println(Vo);
-    Serial.println(ax);
+    //Serial.println(ax);
    
     datas[0] = lowByte(ax);
     datas[1] = highByte(ax);
