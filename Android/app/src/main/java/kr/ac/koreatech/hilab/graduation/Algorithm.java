@@ -1,6 +1,6 @@
 package kr.ac.koreatech.hilab.graduation;
 
-public final class Data {
+public final class Algorithm {
 
     /**
      *

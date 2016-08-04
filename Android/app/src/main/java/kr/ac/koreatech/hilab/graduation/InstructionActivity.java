@@ -17,7 +17,6 @@ public class InstructionActivity extends Activity implements View.OnClickListene
     TextView guideView;
     ImageView image = null;
     Bitmap bit;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
