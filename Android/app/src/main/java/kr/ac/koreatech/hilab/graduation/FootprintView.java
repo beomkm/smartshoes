@@ -1,0 +1,269 @@
+package kr.ac.koreatech.hilab.graduation;
+
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.util.AttributeSet;
+import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
+
+/**
+ * Created by Park on 2016-07-28.
+ */
+public class FootprintView extends View {
+    private final int COLOR_L = 0xFF2222DD;
+    private final int COLOR_H = 0xFFDD2222;
+    private final int COLOR_L_A = COLOR_L>>24&0xFF;
+    private final int COLOR_L_R = COLOR_L>>16&0xFF;
+    private final int COLOR_L_G = COLOR_L>>8&0xFF;
+    private final int COLOR_L_B = COLOR_L&0xFF;
+    private final int COLOR_H_A = COLOR_H>>24&0xFF;
+    private final int COLOR_H_R = COLOR_H>>16&0xFF;
+    private final int COLOR_H_G = COLOR_H>>8&0xFF;
+    private final int COLOR_H_B = COLOR_H&0xFF;
+
+    private Bitmap ruBitmapOrg; //right upper original
+    private Bitmap rlBitmapOrg; //right lower original
+    private Bitmap luBitmapOrg; //left upper original
+    private Bitmap llBitmapOrg; //left lower original
+
+    private Bitmap canvasBitmap;
+    private Bitmap ruBitmap; //right upper original
+    private Bitmap rlBitmap; //right lower original
+    private Bitmap luBitmap; //left upper original
+    private Bitmap llBitmap; //left lower original
+
+    private ImageView imgView;
+
+    private Paint ruPaint;
+    private Paint rlPaint;
+    private Paint luPaint;
+    private Paint llPaint;
+
+
+    private int mWidth = 0;
+    private int mHeight = 0;
+    private int[] buffer;
+
+    double[] sine = new double[360];
+    double[] cosine = new double[360];
+
+    public FootprintView(Context context){
+        super(context);
+        Log.d("ttt", "Con1");
+        setFocusable(true);
+        setBackgroundColor(0x00000000);
+
+
+        for(int deg = 0 ; deg < 360; deg++)
+        {
+            double rad = deg * Math.PI / 180;
+            sine[deg] = Math.sin(rad);
+            cosine[deg] = Math.cos(rad);
+        }
+
+        Log.d("ttt", "Con2");
+
+        ruPaint = new Paint();
+        rlPaint = new Paint();
+        luPaint = new Paint();
+        llPaint = new Paint();
+
+        ruBitmapOrg = BitmapFactory.decodeResource(getResources(), R.drawable.foot_ru);
+        rlBitmapOrg = BitmapFactory.decodeResource(getResources(), R.drawable.foot_rl);
+        luBitmapOrg = BitmapFactory.decodeResource(getResources(), R.drawable.foot_lu);
+        llBitmapOrg = BitmapFactory.decodeResource(getResources(), R.drawable.foot_ll);
+
+
+        mWidth = ruBitmapOrg.getWidth();
+        mHeight = ruBitmapOrg.getHeight();
+
+        //buffer = new int[mWidth * mHeight];
+        //ruBitmap.getPixels(buffer, 0, mWidth, 0, 0, mWidth, mHeight);
+
+        canvasBitmap = Bitmap.createBitmap(400*2, 400, Bitmap.Config.ARGB_8888);
+
+        ruBitmap = Bitmap.createScaledBitmap(ruBitmapOrg, 400, 400, false);
+        rlBitmap = Bitmap.createScaledBitmap(rlBitmapOrg, 400, 400, false);
+        luBitmap = Bitmap.createScaledBitmap(luBitmapOrg, 400, 400, false);
+        llBitmap = Bitmap.createScaledBitmap(llBitmapOrg, 400, 400, false);
+        Log.d("ttt", "Con3");
+        //mViewBitmap = Bitmap.createBitmap(mWidth, mHeight, Bitmap.Config.ARGB_8888);
+        //mViewBitmap.setPixels(buffer, 0, mWidth, 0, 0, mWidth, mHeight);
+
+
+    }
+
+    public FootprintView (Context context,AttributeSet attr) {
+        super(context,attr);
+    }
+    public FootprintView (Context context, AttributeSet attr, int defStyle){
+        super(context, attr, defStyle);
+    }
+
+
+    public int rotate(int dir, int degree)
+    {
+
+        Bitmap uBitmap;
+        Bitmap lBitmap;
+        if(dir == FootProtocol.FOOT_LEFT) {
+            uBitmap = Bitmap.createScaledBitmap(luBitmapOrg, 400, 400, false);
+            lBitmap = Bitmap.createScaledBitmap(llBitmapOrg, 400, 400, false);
+        }
+        else if(dir == FootProtocol.FOOT_RIGHT) {
+            uBitmap = Bitmap.createScaledBitmap(ruBitmapOrg, 400, 400, false);
+            lBitmap = Bitmap.createScaledBitmap(rlBitmapOrg, 400, 400, false);
+        }
+        else
+            return -1;
+
+
+        int[] oldData, newData;
+        int width, height;
+        int cx, cy;
+
+        oldData = new int[uBitmap.getWidth() * uBitmap.getHeight()];
+        newData = new int[uBitmap.getWidth() * uBitmap.getHeight()];
+
+
+        width = uBitmap.getWidth();
+        height = uBitmap.getHeight();
+        cx = width/2;
+        cy = height/2;  //centre : middle
+
+
+
+
+        uBitmap.getPixels(oldData, 0, 400, 0, 0, uBitmap.getWidth(), uBitmap.getHeight());
+        rotate2D(newData, oldData, width, height, degree, cx, cy);
+        uBitmap.setPixels(newData, 0, 400, 0, 0, uBitmap.getWidth(), uBitmap.getHeight());
+
+
+
+        lBitmap.getPixels(oldData, 0, 400, 0, 0, lBitmap.getWidth(), lBitmap.getHeight());
+        rotate2D(newData, oldData, width, height, degree, cx, cy);
+        lBitmap.setPixels(newData, 0, 400, 0, 0, lBitmap.getWidth(), lBitmap.getHeight());
+
+
+        if(dir == FootProtocol.FOOT_LEFT) {
+            luBitmap = uBitmap;
+            llBitmap = lBitmap;
+        }
+        else if(dir == FootProtocol.FOOT_RIGHT) {
+            ruBitmap = uBitmap;
+            rlBitmap = lBitmap;
+        }
+        else
+            return -1;
+
+        /*
+
+        ruBitmap = Bitmap.createScaledBitmap(ruBitmapOrg, 400, 400, false);
+        rlBitmap = Bitmap.createScaledBitmap(rlBitmapOrg, 400, 400, false);
+
+        int[] oldData, newData;
+        int width, height;
+        int cx, cy;
+
+        oldData = new int[ruBitmap.getWidth() * ruBitmap.getHeight()];
+        newData = new int[ruBitmap.getWidth() * ruBitmap.getHeight()];
+
+
+        width = ruBitmap.getWidth();
+        height = ruBitmap.getHeight();
+        cx = width/2;
+        cy = height/2;  //centre : middle
+
+
+
+
+        ruBitmap.getPixels(oldData, 0, 400, 0, 0, ruBitmap.getWidth(), ruBitmap.getHeight());
+        rotate2D(newData, oldData, width, height, degree, cx, cy);
+        ruBitmap.setPixels(newData, 0, 400, 0, 0, ruBitmap.getWidth(), ruBitmap.getHeight());
+
+
+
+        rlBitmap.getPixels(oldData, 0, 400, 0, 0, rlBitmap.getWidth(), rlBitmap.getHeight());
+        rotate2D(newData, oldData, width, height, degree, cx, cy);
+        rlBitmap.setPixels(newData, 0, 400, 0, 0, rlBitmap.getWidth(), rlBitmap.getHeight());
+
+        */
+        return 0;
+    }
+
+
+    private void rotate2D(int[] dest, int[] src, int width, int height, int deg, int cx, int cy) {
+        int px, py;
+        deg %= 360;
+        if(deg<0) deg += 360;
+        for(int i=0; i<height; i++) { //y
+            for(int j=0; j<width; j++) { //x
+                px = (int)((j-cx)*cosine[deg] - (i-cy)*sine[deg] + cx);
+                py = (int)((j-cx)*sine[deg] + (i-cy)*cosine[deg] + cy);
+                if(px<0 || px>width-1 || py<0 || py>height-1) {
+                    dest[i*width+j] = 0x00000000; //transparent
+                }
+                else {
+                    dest[i*width+j] = src[py*width+px];
+                }
+            }
+        }
+    }
+
+    public int setPaint(int dir, float u, float l)
+    {
+
+        int ua = (int)(COLOR_L_A*(1-u) + COLOR_H_A*u);
+        int ur = (int)(COLOR_L_R*(1-u) + COLOR_H_R*u);
+        int ug = (int)(COLOR_L_G*(1-u) + COLOR_H_G*u);
+        int ub = (int)(COLOR_L_B*(1-u) + COLOR_H_B*u);
+
+        int la = (int)(COLOR_L_A*(1-l) + COLOR_H_A*l);
+        int lr = (int)(COLOR_L_R*(1-l) + COLOR_H_R*l);
+        int lg = (int)(COLOR_L_G*(1-l) + COLOR_H_G*l);
+        int lb = (int)(COLOR_L_B*(1-l) + COLOR_H_B*l);
+
+
+        if(dir == FootProtocol.FOOT_LEFT) {
+            luPaint.setColorFilter(new PorterDuffColorFilter(ua<<24|ur<<16|ug<<8|ub, PorterDuff.Mode.SRC_ATOP));
+            llPaint.setColorFilter(new PorterDuffColorFilter(la<<24|lr<<16|lg<<8|lb, PorterDuff.Mode.SRC_ATOP));
+        }
+        else if(dir == FootProtocol.FOOT_RIGHT) {
+            ruPaint.setColorFilter(new PorterDuffColorFilter(ua<<24|ur<<16|ug<<8|ub, PorterDuff.Mode.SRC_ATOP));
+            rlPaint.setColorFilter(new PorterDuffColorFilter(la<<24|lr<<16|lg<<8|lb, PorterDuff.Mode.SRC_ATOP));
+        }
+        else
+            return -1;
+
+        return 0;
+    }
+
+    public void setImageView(ImageView iv) {
+        imgView = iv;
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        Log.d("ttt", "oD1");
+        Log.d("ttt", "onDraw : " + ruBitmap + "Paint" + ruPaint);
+
+        Canvas can = new Canvas(canvasBitmap);
+
+        can.drawBitmap(ruBitmap, 400, 0, ruPaint);
+        can.drawBitmap(rlBitmap, 400, 0, rlPaint);
+        can.drawBitmap(luBitmap, 0, 0, luPaint);
+        can.drawBitmap(llBitmap, 0, 0, llPaint);
+
+        //MainActivity.img.setImageBitmap(uBitmap);
+        imgView.setImageBitmap(canvasBitmap);
+        //canvas.translate(0, mViewBitmap.getHeight());
+        Log.d("ttt", "oD2");
+        super.onDraw(canvas);
+    }
+}
