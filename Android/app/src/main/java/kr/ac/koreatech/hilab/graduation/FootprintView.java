@@ -253,6 +253,7 @@ public class FootprintView extends View {
         Log.d("ttt", "oD1");
         Log.d("ttt", "onDraw : " + ruBitmap + "Paint" + ruPaint);
 
+        canvasBitmap = Bitmap.createBitmap(400*2, 400, Bitmap.Config.ARGB_8888);
         Canvas can = new Canvas(canvasBitmap);
 
         can.drawBitmap(ruBitmap, 400, 0, ruPaint);
@@ -261,6 +262,7 @@ public class FootprintView extends View {
         can.drawBitmap(llBitmap, 0, 0, llPaint);
 
         //MainActivity.img.setImageBitmap(uBitmap);
+
         imgView.setImageBitmap(canvasBitmap);
         //canvas.translate(0, mViewBitmap.getHeight());
         Log.d("ttt", "oD2");

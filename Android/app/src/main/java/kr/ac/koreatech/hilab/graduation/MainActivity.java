@@ -3,6 +3,8 @@ package kr.ac.koreatech.hilab.graduation;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView img;
     private TextView text_msg;
     private Thread mThread;
+
     private String msg="";
     private FootprintView fv;
     boolean isConnected=false;
@@ -54,22 +57,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart()
     {
+
         super.onStart();
+
+
+        MyThread th = new MyThread(fv, img);
+        th.start();
+
         mThread = new Thread(new Runnable() {
             @Override
             public void run() {
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        // TODO Auto-generated method stub
-                        fv.rotate(FootProtocol.FOOT_RIGHT, 45);
-                        fv.rotate(FootProtocol.FOOT_LEFT, -45);
-                        fv.setPaint(FootProtocol.FOOT_RIGHT, 0.8f, 0.2f);
-                        fv.setPaint(FootProtocol.FOOT_LEFT, 0.3f, 0.5f);
-                        fv.invalidate();
-                    }
-                });
                 if(!mThread.isInterrupted()) {
                     // TODO Auto-generated method stub
                     try {
@@ -191,4 +189,45 @@ public class MainActivity extends AppCompatActivity {
                 finish();
         }
     }
+}
+
+
+
+
+class MyThread extends Thread {
+    private FootprintView bv;
+    private ImageView iv;
+    private int angle;
+    private float power;
+
+    MyThread(FootprintView bv, ImageView iv) {
+        angle = 0;
+        power = 0f;
+        this.bv = bv;
+        this.iv = iv;
+    }
+
+    @Override
+    public void run() {
+
+        while(true) {
+            Log.d("info", "MyThread running");
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    //bv.rotate(angle += 5);
+                    bv.rotate(FootProtocol.FOOT_RIGHT, angle += 45);
+                    bv.invalidate();
+                    iv.invalidate();
+                }
+            });
+            try {
+                this.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
 }
