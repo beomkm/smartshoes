@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                     int[] buf = new int[2*NUM_DATA];
-                    int[] data = new int[NUM_DATA];
+                    short[] data = new short[NUM_DATA];
                     int count = 0;
 
                     int dir = 0;  //1:left , 2:right
@@ -102,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
 
+                    DataManager dm = DataManager.getInstance();
 
                     while (isConnected) {
                         try {
@@ -112,9 +113,22 @@ public class MainActivity extends AppCompatActivity {
                             if (count >= 2*NUM_DATA) {
                                 msg = "";
                                 for (int i = 0; i < NUM_DATA; i++) {
-                                    data[i] = (buf[i * 2] & 0xFF) | (buf[i * 2 + 1] & 0xFF) << 8;
-                                    msg += data[i] + " ";
+                                    data[i] = (short)((buf[i * 2] & 0xFF) | (buf[i * 2 + 1] & 0xFF) << 8);
+                                    //msg += data[i] + " ";
                                 }
+                                //Log.d("ttt", msg);
+                                dm.ahrs.calcQuaternion(data);
+                                msg += dm.ahrs.q[0]+"  "+dm.ahrs.q[1]+"  "+dm.ahrs.q[2]+"  "+dm.ahrs.q[3];
+                                Log.d("ttt", msg);
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        // TODO Auto-generated method stub
+                                        //text_msg.setText(msg);
+
+                                    }
+                                });
+
                                 count = 0;
                             }
 
@@ -126,8 +140,8 @@ public class MainActivity extends AppCompatActivity {
                                         msg += data[i] + " ";
                                     }
                                 }
-                                Log.d("ttt", msg);
                                 */
+
                         } catch (IOException e) {
                             // TODO Auto-generated catch block
                             e.printStackTrace();
@@ -137,7 +151,8 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 // TODO Auto-generated method stub
-                                text_msg.setText(msg);
+                                //text_msg.setText(msg);
+
                             }
                         });
 
@@ -212,9 +227,9 @@ class MyThread extends Thread {
 
     @Override
     public void run() {
-
+        final DataManager dm = DataManager.getInstance();
         while(true) {
-            Log.d("info", "MyThread running");
+            //Log.d("info", "MyThread running");
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
                 public void run() {
@@ -226,6 +241,10 @@ class MyThread extends Thread {
                     power += 0.1;
                     if(power>1) power = 0;
                     */
+
+                    bv.rotate(2, (int)(dm.ahrs.q[1]*180));
+                    bv.invalidate();
+                    iv.invalidate();
                 }
             });
             try {

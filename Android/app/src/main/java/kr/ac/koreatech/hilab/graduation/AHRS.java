@@ -29,7 +29,7 @@ public class AHRS {
      * 9. pressure_1
      * @return
      */
-    public void calcQuaternion(int []data){
+    public void calcQuaternion(short []data){
         float recipNorm;
         float[] s = new float[4]; // step
         float[] qDot = new float[4]; // apply feedback step;

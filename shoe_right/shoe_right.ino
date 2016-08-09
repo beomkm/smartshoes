@@ -86,8 +86,10 @@ void loop() {
   int i;
   
   //imu
+
   accelgyro.getMotion9(&ax, &ay, &az, &gx, &gy, &gz, &mx, &my, &mz);
-   
+
+  
   //pressure
   UpVo = analogRead(UpFSRpin);
   DownVo = analogRead(DownFSRpin);
@@ -96,7 +98,7 @@ void loop() {
 
   //sendable = 1;
   if(sendable) {
-    //Serial.println(Vo);
+    //Serial.println(UpVo);
     //Serial.println(ax);
    
     datas[0] = lowByte(ax);
@@ -122,8 +124,8 @@ void loop() {
     
     datas[18] = lowByte((int)UpVo);
     datas[19] = highByte((int)UpVo);
-    datas[19] = lowByte((int)DownVo);
-    datas[20] = highByte((int)DownVo);
+    datas[20] = lowByte((int)DownVo);
+    datas[21] = highByte((int)DownVo);
    
    //Serial.println(ax);
    
@@ -131,8 +133,10 @@ void loop() {
     for(i=0; i<22; i++) {
       if(datas[i]==0) datas[i] = 0x80;
       else if(datas[i]==0x80) datas[i] = 0x81;
-    } 
+    }
+    
     client.write(datas);
+
   }
   
   /*
