@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
         //img.setImageBitmap();
         text_msg= (TextView)findViewById(R.id.massage);
 
+
     }
 
     @Override

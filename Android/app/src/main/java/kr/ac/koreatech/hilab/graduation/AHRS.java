@@ -1,7 +1,19 @@
 package kr.ac.koreatech.hilab.graduation;
 
-public final class Algorithm {
+public class AHRS {
 
+    private float []q;
+    private final static float BETA = 0.1f; // 2* proportional gain
+    private final static float SAMPLE_FREQ = 512.0f;
+
+    public AHRS(){
+        //init quaternion
+        q = new float[4];
+        q[0] = 1.0f;
+        q[1] = 0.0f;
+        q[2] = 0.0f;
+        q[3] = 0.0f;
+    }
     /**
      *
      * @param data
@@ -17,25 +29,15 @@ public final class Algorithm {
      * 9. pressure_1
      * @return
      */
-
-    public static float[] getQuaternion(int []data){
-        float[] q = new float[4];
+    public float[] getQuaternion(int []data){
         float recipNorm;
         float[] s = new float[4]; // step
         float[] qDot = new float[4]; // apply feedback step;
-        float beta = 0.1f; // 2* proportional gain
         float hx, hy;
         float _2q0mx, _2q0my, _2q0mz, _2q1mx,
                 _2bx, _2bz, _4bx, _4bz,
                 _2q0, _2q1, _2q2, _2q3,
                 _2q0q2, _2q2q3, q0q0, q0q1, q0q2, q0q3, q1q1, q1q2, q1q3, q2q2, q2q3, q3q3;
-
-
-        //init quaternion
-        q[0] = 1.0f;
-        q[1] = 0.0f;
-        q[2] = 0.0f;
-        q[3] = 0.0f;
 
         float ax = data[0]*2.0f/32768.0f; // 2 g full range for accelerometer
         float ay = data[1]*2.0f/32768.0f; //<>//
@@ -54,13 +56,13 @@ public final class Algorithm {
         qDot[3] = 0.5f * (q[0] * gz + q[1] * gy - q[2] * gx);
 
         // Normalise accelerometer measurement
-        recipNorm = Algorithm.invSqrt(ax * ax + ay * ay + az * az);
+        recipNorm = invSqrt(ax * ax + ay * ay + az * az);
         ax *= recipNorm;
         ay *= recipNorm;
         az *= recipNorm;
 
         // Normalise magnetometer measurement
-        recipNorm = Algorithm.invSqrt(mx * mx + my * my + mz * mz);
+        recipNorm = invSqrt(mx * mx + my * my + mz * mz);
         mx *= recipNorm;
         my *= recipNorm;
         mz *= recipNorm;
@@ -102,20 +104,29 @@ public final class Algorithm {
         s[1] = _2q3 * (2.0f * q1q3 - _2q0q2 - ax) + _2q0 * (2.0f * q0q1 + _2q2q3 - ay) - 4.0f * q[1] * (1 - 2.0f * q1q1 - 2.0f * q2q2 - az) + _2bz * q[3] * (_2bx * (0.5f - q2q2 - q3q3) + _2bz * (q1q3 - q0q2) - mx) + (_2bx * q[2] + _2bz * q[0]) * (_2bx * (q1q2 - q0q3) + _2bz * (q0q1 + q2q3) - my) + (_2bx * q[3] - _4bz * q[1]) * (_2bx * (q0q2 + q1q3) + _2bz * (0.5f - q1q1 - q2q2) - mz);
         s[2] = -_2q0 * (2.0f * q1q3 - _2q0q2 - ax) + _2q3 * (2.0f * q0q1 + _2q2q3 - ay) - 4.0f * q[2] * (1 - 2.0f * q1q1 - 2.0f * q2q2 - az) + (-_4bx * q[2] - _2bz * q[0]) * (_2bx * (0.5f - q2q2 - q3q3) + _2bz * (q1q3 - q0q2) - mx) + (_2bx * q[1] + _2bz * q[3]) * (_2bx * (q1q2 - q0q3) + _2bz * (q0q1 + q2q3) - my) + (_2bx * q[0] - _4bz * q[2]) * (_2bx * (q0q2 + q1q3) + _2bz * (0.5f - q1q1 - q2q2) - mz);
         s[3] = _2q1 * (2.0f * q1q3 - _2q0q2 - ax) + _2q2 * (2.0f * q0q1 + _2q2q3 - ay) + (-_4bx * q[3] + _2bz * q[1]) * (_2bx * (0.5f - q2q2 - q3q3) + _2bz * (q1q3 - q0q2) - mx) + (-_2bx * q[0] + _2bz * q[2]) * (_2bx * (q1q2 - q0q3) + _2bz * (q0q1 + q2q3) - my) + _2bx * q[1] * (_2bx * (q0q2 + q1q3) + _2bz * (0.5f - q1q1 - q2q2) - mz);
-        recipNorm = Algorithm.invSqrt(s[0] * s[0] + s[1] * s[1] + s[2] * s[2] + s[3] * s[3]); // normalise step magnitude
+
+
+        recipNorm = invSqrt(s[0] * s[0] + s[1] * s[1] + s[2] * s[2] + s[3] * s[3]); // normalise step magnitude
         s[0] *= recipNorm;
         s[1] *= recipNorm;
         s[2] *= recipNorm;
         s[3] *= recipNorm;
 
         // Apply feedback step
-        qDot[0]-= beta * s[0];
-        qDot[1] -= beta * s[1];
-        qDot[2] -= beta * s[2];
-        qDot[3] -= beta * s[3];
+        qDot[0]-= AHRS.BETA * s[0];
+        qDot[1] -= AHRS.BETA * s[1];
+        qDot[2] -= AHRS.BETA * s[2];
+        qDot[3] -= AHRS.BETA * s[3];
+
+        // Integrate rate of change of quaternion to yield quaternion
+        q[0] += qDot[0] * (1.0f / AHRS.SAMPLE_FREQ);
+        q[1] += qDot[1] * (1.0f / AHRS.SAMPLE_FREQ);
+        q[2] += qDot[2] * (1.0f / AHRS.SAMPLE_FREQ);
+        q[3] += qDot[3] * (1.0f / AHRS.SAMPLE_FREQ);
+
 
         // Normalise quaternion
-        recipNorm = Algorithm.invSqrt(q[0] * q[0] + q[1] * q[1] + q[2] * q[2] + q[3] * q[3]);
+        recipNorm = invSqrt(q[0] * q[0] + q[1] * q[1] + q[2] * q[2] + q[3] * q[3]);
         q[0] *= recipNorm;
         q[1] *= recipNorm;
         q[2] *= recipNorm;

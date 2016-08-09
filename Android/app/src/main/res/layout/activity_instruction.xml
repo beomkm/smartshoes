@@ -7,16 +7,20 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="가이드 라인"
+        android:text="사용 메뉴얼"
         android:id="@+id/textView"
         android:textSize="35dp"
-        android:layout_gravity="center" />
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="15dp"
-        android:id="@+id/guideView" />
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="10dp"
+        android:id="@+id/guideView"
+        android:text="@string/guide"/>
 
     <ImageView
         android:layout_width="150dp"
