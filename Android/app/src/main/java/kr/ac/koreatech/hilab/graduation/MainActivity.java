@@ -22,7 +22,9 @@ import java.net.Socket;
 
 public class MainActivity extends AppCompatActivity {
 
-    static final int PORT=12345;
+    static final int PORT = 12345;
+    static final int NUM_DATA = 11;
+
     private ServerSocket serversocket;
     private Socket socket;
     private DataInputStream is;
@@ -89,8 +91,8 @@ public class MainActivity extends AppCompatActivity {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
-                    int[] buf = new int[20];
-                    int[] data = new int[10];
+                    int[] buf = new int[2*NUM_DATA];
+                    int[] data = new int[NUM_DATA];
                     int count = 0;
 
                     int dir = 0;  //1:left , 2:right
@@ -107,9 +109,9 @@ public class MainActivity extends AppCompatActivity {
                             buf[count] = is.readByte();
                             if (buf[count] == -128) buf[count] = 0;
                             ++count;
-                            if (count >= 20) {
+                            if (count >= 2*NUM_DATA) {
                                 msg = "";
-                                for (int i = 0; i < 10; i++) {
+                                for (int i = 0; i < NUM_DATA; i++) {
                                     data[i] = (buf[i * 2] & 0xFF) | (buf[i * 2 + 1] & 0xFF) << 8;
                                     msg += data[i] + " ";
                                 }

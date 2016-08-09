@@ -3,8 +3,8 @@ package kr.ac.koreatech.hilab.graduation;
 public class AHRS {
 
     public float []q;
-    private final static float BETA = 0.1f; // 2* proportional gain
-    private final static float SAMPLE_FREQ = 512.0f;
+    private static final float BETA = 0.1f; // 2* proportional gain
+    private static final float SAMPLE_FREQ = 512.0f;
 
     public AHRS(){
         //init quaternion
