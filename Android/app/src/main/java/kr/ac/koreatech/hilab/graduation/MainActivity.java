@@ -216,13 +216,17 @@ class MyThread extends Thread {
                 @Override
                 public void run() {
                     //bv.rotate(angle += 5);
-                    bv.rotate(FootProtocol.FOOT_RIGHT, angle += 45);
+                    /*
+                    bv.setPaint(FootProtocol.FOOT_LEFT, power, 1-power);
                     bv.invalidate();
                     iv.invalidate();
+                    power += 0.1;
+                    if(power>1) power = 0;
+                    */
                 }
             });
             try {
-                this.sleep(500);
+                this.sleep(200);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
