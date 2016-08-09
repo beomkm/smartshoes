@@ -2,7 +2,7 @@ package kr.ac.koreatech.hilab.graduation;
 
 public class AHRS {
 
-    private float []q;
+    public float []q;
     private final static float BETA = 0.1f; // 2* proportional gain
     private final static float SAMPLE_FREQ = 512.0f;
 
@@ -29,7 +29,7 @@ public class AHRS {
      * 9. pressure_1
      * @return
      */
-    public float[] getQuaternion(int []data){
+    public void calcQuaternion(int []data){
         float recipNorm;
         float[] s = new float[4]; // step
         float[] qDot = new float[4]; // apply feedback step;
@@ -131,8 +131,6 @@ public class AHRS {
         q[1] *= recipNorm;
         q[2] *= recipNorm;
         q[3] *= recipNorm;
-
-        return q;
     }
 
     private static float invSqrt(float x){
