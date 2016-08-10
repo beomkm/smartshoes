@@ -1,6 +1,6 @@
 # walking
 
-* : Current project
+(¡Øasterisk means  'active project')
 
 *Android/ : Main project (Android)
 
