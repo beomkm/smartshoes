@@ -4,8 +4,8 @@
 #include <I2Cdev.h>
 #include <MPU6050.h>
 
-#define AP_RECONN_TIME 4
-#define SV_RECONN_TIME 4
+#define AP_RECONN_TIME 3
+#define SV_RECONN_TIME 3
 
 //imu
 MPU6050 accelgyro;
@@ -93,8 +93,8 @@ void loop() {
   //pressure
   UpVo = analogRead(UpFSRpin);
   DownVo = analogRead(DownFSRpin);
-  UpRfsr = ((9.78 * UpVo)/(1-(UpVo/1023.0)));
-  DownRfsr = ((9.78 * DownVo)/(1-(DownVo/1023.0)));
+  //UpRfsr = ((9.78 * UpVo)/(1-(UpVo/1023.0)));
+  //DownRfsr = ((9.78 * DownVo)/(1-(DownVo/1023.0)));
 
   //sendable = 1;
   if(sendable) {
@@ -153,5 +153,5 @@ void loop() {
     Serial.println("Trying to reconnect..");
     connectSv();
   }
-  delay(50);
+  delay(10);
 }

@@ -4,7 +4,8 @@ public class AHRS {
 
     public float []q;
     private static final float BETA = 0.1f; // 2* proportional gain
-    private static final float SAMPLE_FREQ = 512.0f;
+    //private static final float SAMPLE_FREQ = 512.0f;
+    private static final float SAMPLE_FREQ = 100.0f;
 
     public AHRS(){
         //init quaternion
