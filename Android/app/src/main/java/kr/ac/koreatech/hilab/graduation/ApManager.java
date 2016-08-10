@@ -28,7 +28,7 @@ public class ApManager {
                 wifimanager.setWifiEnabled(false);
             }
             Method method = wifimanager.getClass().getMethod("setWifiApEnabled", WifiConfiguration.class, boolean.class);
-            method.invoke(wifimanager, wificonfiguration, !isApOn(context));
+            method.invoke(wifimanager, wificonfiguration, true);
             return true;
         }
         catch (Exception e) {
