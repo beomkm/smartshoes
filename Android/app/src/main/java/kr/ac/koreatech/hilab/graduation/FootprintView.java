@@ -250,8 +250,8 @@ public class FootprintView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        Log.d("ttt", "oD1");
-        Log.d("ttt", "onDraw : " + ruBitmap + "Paint" + ruPaint);
+        //Log.d("ttt", "oD1");
+        //Log.d("ttt", "onDraw : " + ruBitmap + "Paint" + ruPaint);
 
         canvasBitmap = Bitmap.createBitmap(400*2, 400, Bitmap.Config.ARGB_8888);
         Canvas can = new Canvas(canvasBitmap);
@@ -265,7 +265,7 @@ public class FootprintView extends View {
 
         imgView.setImageBitmap(canvasBitmap);
         //canvas.translate(0, mViewBitmap.getHeight());
-        Log.d("ttt", "oD2");
+        //Log.d("ttt", "oD2");
         super.onDraw(canvas);
     }
 }

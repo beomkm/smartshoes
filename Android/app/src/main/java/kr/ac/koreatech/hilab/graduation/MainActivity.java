@@ -11,6 +11,8 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -20,7 +22,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
     static final int PORT = 12345;
     static final int NUM_DATA = 11;
@@ -33,10 +35,16 @@ public class MainActivity extends AppCompatActivity {
     private TextView text_msg;
     private Thread mThread;
 
-    private String msg="";
+    private String msg = "";
     private FootprintView fv;
-    boolean isConnected=false;
+    boolean isConnected = false;
 
+
+    private EditText x;
+    private EditText z;
+    private EditText b;
+
+    Button changeBtn;
 
     int angle = 0;
     int power = 0;
@@ -50,12 +58,33 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         addContentView(fv, new LinearLayout.LayoutParams(0, 0));
         img = (ImageView) findViewById(R.id.img);
+
+        changeBtn = (Button)findViewById(R.id.changeBtn);
+        changeBtn.setOnClickListener(this);
+
+        x = (EditText)findViewById(R.id.editTextx);
+        z = (EditText)findViewById(R.id.editTextz);
+        b = (EditText)findViewById(R.id.editTextb);
+
+
+
         fv.setImageView(img);
         //img.setImageBitmap();
-        text_msg= (TextView)findViewById(R.id.massage);
+        //text_msg= (TextView)findViewById(R.id.massage);
 
 
     }
+
+    /*
+    public void onClick2(View v)
+    {
+        final DataManager dm = DataManager.getInstance();
+        dm.ahrs.tx = (float)Integer.getInteger(x.getText()+"");
+        dm.ahrs.tz = (float)Integer.getInteger(z.getText()+"");
+        dm.ahrs.tb = (float)Integer.getInteger(b.getText()+"");
+    }*/
+
+
 
     @Override
     protected void onStart()
@@ -118,8 +147,10 @@ public class MainActivity extends AppCompatActivity {
                                 }
                                 //Log.d("ttt", msg);
                                 dm.ahrs.calcQuaternion(data);
-                                msg += dm.ahrs.q[0]+"  "+dm.ahrs.q[1]+"  "+dm.ahrs.q[2]+"  "+dm.ahrs.q[3];
-                                Log.d("ttt", msg);
+                                //msg += dm.ahrs.q[0]+"  "+dm.ahrs.q[1]+"  "+dm.ahrs.q[2]+"  "+dm.ahrs.q[3];
+
+                                //msg += dm.ahrs.mmx+" "+dm.ahrs.mmy+" "+dm.ahrs.mmz;
+                                //Log.d("ttt", msg);
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
@@ -184,8 +215,17 @@ public class MainActivity extends AppCompatActivity {
         return super.onKeyDown(keyCode, event);
     }
 
+    @Override
     public void onClick(View v) {
         switch(v.getId()) {
+            case R.id.changeBtn :
+                final DataManager dm = DataManager.getInstance();
+                dm.ahrs.tx = (float)Integer.parseInt(x.getText().toString());
+                dm.ahrs.tz = (float)Integer.parseInt(z.getText().toString());
+                dm.ahrs.tb = (float)Integer.parseInt(b.getText().toString());
+                Log.d("ttt","rr");
+
+                break;
             case R.id.stopBtn :
                 try{
                     if(isConnected) {
@@ -241,8 +281,17 @@ class MyThread extends Thread {
                     power += 0.1;
                     if(power>1) power = 0;
                     */
+                    //bv.rotate(2, (int)(dm.ahrs.yaw));
 
-                    bv.rotate(2, (int)(dm.ahrs.q[1]*180));
+                    //double bz = 180.0f;
+                    //double bx = dm.ahrs.mmx/Math.cos(20.0f/180.0f*Math.PI)-bz*Math.tan(20.0f/180.0f*Math.PI);
+                    double bx = dm.ahrs.mmx;
+                    double by = dm.ahrs.mmy;
+                    double bz = dm.ahrs.mmz;
+                    //int at = 0;
+                    //int at = 180+(int)(180.0f/Math.PI*Math.atan2(by, bx));
+                    int at = (int)dm.ahrs.tb + (int)(180.0f/Math.PI*Math.atan2(bz, bx));
+                    bv.rotate(2, at);
                     bv.invalidate();
                     iv.invalidate();
                 }

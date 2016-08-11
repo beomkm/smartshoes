@@ -26,7 +26,7 @@ float UpRfsr, DownRfsr;
 
 int sendable = 0;
 
-char datas[70];
+char datas[23];
 
 
 char ssid[] = "MySSID" ;          //  your network SSID (name) 
@@ -86,7 +86,7 @@ void loop() {
   int i;
   
   //imu
-
+  
   accelgyro.getMotion9(&ax, &ay, &az, &gx, &gy, &gz, &mx, &my, &mz);
 
   
@@ -100,6 +100,7 @@ void loop() {
   if(sendable) {
     //Serial.println(UpVo);
     //Serial.println(ax);
+   
    
     datas[0] = lowByte(ax);
     datas[1] = highByte(ax);
@@ -115,6 +116,7 @@ void loop() {
     datas[10] = lowByte(gz);
     datas[11] = highByte(gz);
     
+    
     datas[12] = lowByte(mx);
     datas[13] = highByte(mx);
     datas[14] = lowByte(my);
@@ -127,6 +129,8 @@ void loop() {
     datas[20] = lowByte((int)DownVo);
     datas[21] = highByte((int)DownVo);
    
+    datas[22] = 0;
+
    //Serial.println(ax);
    
    
@@ -149,9 +153,9 @@ void loop() {
     client.stop();
     sendable = 0;
     
-    delay(1000);
+    delay(500);
     Serial.println("Trying to reconnect..");
     connectSv();
   }
-  delay(10);
+  delay(100);
 }

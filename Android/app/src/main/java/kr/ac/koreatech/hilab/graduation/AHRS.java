@@ -3,9 +3,21 @@ package kr.ac.koreatech.hilab.graduation;
 public class AHRS {
 
     public float []q;
+    public float yaw;
+
+    public float mmx;
+    public float mmy;
+    public float mmz;
+
+    public float tx;
+    public float tz;
+    public float tb;
+
+    //public float pitch;
+    //public float roll;
     private static final float BETA = 0.1f; // 2* proportional gain
     //private static final float SAMPLE_FREQ = 512.0f;
-    private static final float SAMPLE_FREQ = 100.0f;
+    private static final float SAMPLE_FREQ = 512.0f;
 
     public AHRS(){
         //init quaternion
@@ -14,6 +26,17 @@ public class AHRS {
         q[1] = 0.0f;
         q[2] = 0.0f;
         q[3] = 0.0f;
+
+        yaw = 0.0f;
+        mmx = 0.0f;
+        mmy = 0.0f;
+        mmz = 0.0f;
+        //roll = 0.0f;
+        //pitch = 0.0f;
+
+        tx = 0.0f;
+        tz = 0.0f;
+        tb = 0.0f;
     }
     /**
      *
@@ -31,6 +54,11 @@ public class AHRS {
      * @return
      */
     public void calcQuaternion(short []data){
+
+
+
+
+
         float recipNorm;
         float[] s = new float[4]; // step
         float[] qDot = new float[4]; // apply feedback step;
@@ -46,9 +74,17 @@ public class AHRS {
         float gx = data[3]*250.0f/32768.0f; // 250 deg/s full range for gyroscope
         float gy = data[4]*250.0f/32768.0f;
         float gz = data[5]*250.0f/32768.0f;
-        float mx = data[6]*10.0f*1229.0f/4096.0f + 18.0f; // milliGauss (1229 microTesla per 2^12 bits, 10 mG per microTesla)
+        float mx = data[6]*10.0f*1229.0f/4096.0f + tx; // milliGauss (1229 microTesla per 2^12 bits, 10 mG per microTesla)
+        //float my = data[7]*10.0f*1229.0f/4096.0f + 70.0f; // apply calibration offsets in mG that correspond to your environment and magnetometer
         float my = data[7]*10.0f*1229.0f/4096.0f + 70.0f; // apply calibration offsets in mG that correspond to your environment and magnetometer
-        float mz = data[8]*10.0f*1229.0f/4096.0f + 270.0f;
+        float mz = data[8]*10.0f*1229.0f/4096.0f + tz;
+
+        mmx = mx;
+        mmy = my;
+        mmz = mz;
+
+        /*
+
 
         // Rate of change of quaternion from gyroscope
         qDot[0] = 0.5f * (-q[1] * gx - q[2] * gy - q[3] * gz);
@@ -132,6 +168,16 @@ public class AHRS {
         q[1] *= recipNorm;
         q[2] *= recipNorm;
         q[3] *= recipNorm;
+
+        yaw = (float)Math.atan2(2.0f * (q[1] * q[2] + q[0] * q[3]), q[0] * q[0] + q[1] * q[1] - q[2] * q[2] - q[3] * q[3]);
+        //pitch = (float)-Math.asin(2.0f * (q[1] * q[3] - q[0] * q[2]));
+        //roll  = (float)Math.atan2(2.0f * (q[0] * q[1] + q[2] * q[3]), q[0] * q[0] - q[1] * q[1] - q[2] * q[2] + q[3] * q[3]);
+
+        //pitch *= 180.0f / Math.PI;
+        yaw   *= 180.0f / Math.PI;
+        //roll  *= 180.0f / Math.PI;
+
+        */
     }
 
     private static float invSqrt(float x){
