@@ -1,1 +1,1 @@
-include ':app', ':junit-3.8.1', ':achartengine-1.0.0'
+include ':app', ':junit-3.8.1', ':achartengine-1.0.0', ':hzgraperlibrary_v1.0.0'

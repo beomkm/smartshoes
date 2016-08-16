@@ -158,7 +158,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
                                 dm.press1 = data[3];
-                                msg += data[3];
+                                dm.press2 = data[4];
+                                msg += data[3]+" "+data[4];
                                 Log.d("ttt", msg);
                                 runOnUiThread(new Runnable() {
                                     @Override
@@ -302,13 +303,13 @@ class MyThread extends Thread {
 
                     int at = (int)dm.ahrs.tb + (int)(180.0f/Math.PI*Math.atan2(bz, bx));
                     bv.rotate(2, at);
-                    bv.setPaint(FootProtocol.FOOT_RIGHT,(float)dm.press1/320.0f,0);
+                    bv.setPaint(FootProtocol.FOOT_RIGHT,(float)dm.press1/300.0f, (float)dm.press2/200.0f);
                     bv.invalidate();
                     iv.invalidate();
                 }
             });
             try {
-                this.sleep(100);
+                this.sleep(200);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

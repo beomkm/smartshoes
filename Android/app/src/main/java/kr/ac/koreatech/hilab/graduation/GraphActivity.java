@@ -1,97 +1,95 @@
 package kr.ac.koreatech.hilab.graduation;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-
-import android.content.DialogInterface;
 import android.graphics.Color;
+
 import android.os.Bundle;
-import android.view.KeyEvent;
-import android.support.annotation.ColorRes;
+import android.support.v7.app.AppCompatActivity;
 
-import android.view.View;
-import android.widget.LinearLayout;
+import android.view.ViewGroup;
 
-import org.achartengine.ChartFactory;
-import org.achartengine.model.CategorySeries;
-import org.achartengine.renderer.DefaultRenderer;
-import org.achartengine.renderer.SimpleSeriesRenderer;
 
-public class GraphActivity extends Activity {
+import com.handstudio.android.hzgrapherlib.animation.GraphAnimation;
+import com.handstudio.android.hzgrapherlib.graphview.CircleGraphView;
+import com.handstudio.android.hzgrapherlib.vo.GraphNameBox;
+import com.handstudio.android.hzgrapherlib.vo.circlegraph.CircleGraph;
+import com.handstudio.android.hzgrapherlib.vo.circlegraph.CircleGraphVO;
 
-    String[] result = new String[] {"정상", "비정상"};
+import java.util.ArrayList;
+import java.util.List;
+
+public class GraphActivity extends AppCompatActivity {
+
+    private ViewGroup layoutGraphView;
+
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_graph);
 
-        drawPieChart();
+        layoutGraphView = (ViewGroup) findViewById(R.id.layoutGraphView);
+
+
+        // 그래프 그림
+        setCircleGraph();
+    }
+    private void setCircleGraph() {
+
+        CircleGraphVO vo = makeLineGraphAllSetting();
+
+        layoutGraphView.addView(new CircleGraphView(this,vo));
     }
 
-    private void drawPieChart(){
-        // Pie Chart Section Value
-        double[] percent = { 80, 20 };
+    /**
+     * make line graph using options
+     * @return
+     */
+    private CircleGraphVO makeLineGraphAllSetting() {
+        //BASIC LAYOUT SETTING
+        //padding
+        int paddingBottom 	= CircleGraphVO.DEFAULT_PADDING;
+        int paddingTop 		= CircleGraphVO.DEFAULT_PADDING;
+        int paddingLeft 	= CircleGraphVO.DEFAULT_PADDING;
+        int paddingRight 	= CircleGraphVO.DEFAULT_PADDING;
 
-        // Color of each Pie Chart Sections
-        int[] colors = { getResources().getColor(R.color.colorUsual), getResources().getColor(R.color.colorUnusual)};
+        //graph margin
+        int marginTop 		= CircleGraphVO.DEFAULT_MARGIN_TOP;
+        int marginRight 	= CircleGraphVO.DEFAULT_MARGIN_RIGHT;
 
-        // Instantiating CategorySeries to plot Pie Chart
-        CategorySeries distributionSeries = new CategorySeries(
-                "Sports CLub");
-        for (int i = 0; i < percent.length; i++) {
-            // Adding a slice with its values and name to the Pie Chart
-            distributionSeries.add(result[i], percent[i]);
-        }
+        // radius setting
+        int radius = 130;
 
-        // Instantiating a renderer for the Pie Chart
-        DefaultRenderer defaultRenderer = new DefaultRenderer();
-        for (int i = 0; i < percent.length; i++) {
-            SimpleSeriesRenderer seriesRenderer = new SimpleSeriesRenderer();
-            seriesRenderer.setColor(colors[i]);
-            seriesRenderer.setDisplayChartValues(true);
-            //Adding colors to the chart
-            defaultRenderer.setBackgroundColor(getResources().getColor(R.color.colorBack));
-            defaultRenderer.setLabelsTextSize(20f);
-            defaultRenderer.setLegendTextSize(20f);
-            defaultRenderer.setApplyBackgroundColor(true);
-            // Adding a renderer for a slice
-            defaultRenderer.addSeriesRenderer(seriesRenderer);
-        }
+        List<CircleGraph> arrGraph 	= new ArrayList<CircleGraph>();
 
-        defaultRenderer.setChartTitle("Result of Foot Monitoring");
-        defaultRenderer.setChartTitleTextSize(20);
-        defaultRenderer.setZoomButtonsVisible(false);
-        defaultRenderer.setPanEnabled(false);
+        arrGraph.add(new CircleGraph("정상", Color.parseColor("#3366CC"), 1));
+        arrGraph.add(new CircleGraph("비정상", Color.parseColor("#DC3912"), 1));
 
-        LinearLayout chartContainer = (LinearLayout) findViewById(R.id.chart_container);
-        // remove any views before u paint the chart
-        chartContainer.removeAllViews();
-        // drawing pie chart
-        View mChart = ChartFactory.getPieChartView(getBaseContext(),
-                distributionSeries, defaultRenderer);
-        // adding the view to the linearlayout
-        chartContainer.addView(mChart);
-    }
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        switch (keyCode) {
-            case KeyEvent.KEYCODE_BACK:
-                new AlertDialog.Builder(this)
-                        .setTitle("종료")
-                        .setMessage("확인버튼을 누르면 종료됩니다.")
-                        .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                android.os.Process.killProcess(android.os.Process.myPid());
-                            }
-                        })
-                        .setNegativeButton("취소", null)
-                        .show();
-                break;
-            default:
-                break;
-        }
-        return super.onKeyDown(keyCode, event);
+
+        CircleGraphVO vo = new CircleGraphVO(paddingBottom, paddingTop, paddingLeft, paddingRight,marginTop, marginRight,radius, arrGraph);
+
+        // circle Line
+        vo.setLineColor(Color.WHITE);
+
+        // set text setting
+        vo.setTextColor(Color.WHITE);
+        vo.setTextSize(20);
+
+        // set circle center move X ,Y
+        vo.setCenterX(0);
+        vo.setCenterY(0);
+
+        //set animation
+        vo.setAnimation(new GraphAnimation(GraphAnimation.LINEAR_ANIMATION, 2000));
+        //set graph name box
+
+        GraphNameBox graphNameBox = new GraphNameBox();
+
+        // nameBox
+        graphNameBox.setNameboxMarginTop(25);
+        graphNameBox.setNameboxMarginRight(25);
+
+        vo.setGraphNameBox(graphNameBox);
+
+        return vo;
     }
 
 }

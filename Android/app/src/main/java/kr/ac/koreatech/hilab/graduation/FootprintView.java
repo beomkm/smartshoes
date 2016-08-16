@@ -219,6 +219,11 @@ public class FootprintView extends View {
     public int setPaint(int dir, float u, float l)
     {
 
+        if(u>1) u=1;
+        else if(u<0) u=0;
+        if(l>1) l=1;
+        else if(l<0) l=0;
+
         int ua = (int)(COLOR_L_A*(1-u) + COLOR_H_A*u);
         int ur = (int)(COLOR_L_R*(1-u) + COLOR_H_R*u);
         int ug = (int)(COLOR_L_G*(1-u) + COLOR_H_G*u);
