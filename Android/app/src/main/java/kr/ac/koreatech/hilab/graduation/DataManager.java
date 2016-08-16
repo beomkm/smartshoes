@@ -7,11 +7,13 @@ public class DataManager {
 
     private static DataManager instance;
     public AHRS ahrs;
+    public int press1;
 
     private DataManager() {}
 
     private void init() {
         ahrs = new AHRS();
+        press1 = 0;
     }
 
     public static DataManager getInstance() {

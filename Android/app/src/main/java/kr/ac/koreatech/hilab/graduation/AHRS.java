@@ -12,6 +12,7 @@ public class AHRS {
     public float tx;
     public float tz;
     public float tb;
+    public boolean tbFlag;
 
     //public float pitch;
     //public float roll;
@@ -34,9 +35,10 @@ public class AHRS {
         //roll = 0.0f;
         //pitch = 0.0f;
 
-        tx = 0.0f;
-        tz = 0.0f;
-        tb = 0.0f;
+        tx = 100.0f;
+        tz = 200.0f;
+        //tb = 20.0f;
+        tbFlag = false;
     }
     /**
      *

@@ -149,8 +149,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 dm.ahrs.calcQuaternion(data);
                                 //msg += dm.ahrs.q[0]+"  "+dm.ahrs.q[1]+"  "+dm.ahrs.q[2]+"  "+dm.ahrs.q[3];
 
-                                //msg += dm.ahrs.mmx+" "+dm.ahrs.mmy+" "+dm.ahrs.mmz;
-                                //Log.d("ttt", msg);
+                                if(!dm.ahrs.tbFlag) {
+                                    dm.ahrs.tb = -(float)(180.0f/Math.PI*Math.atan2(dm.ahrs.mmz, dm.ahrs.mmx));
+                                    dm.ahrs.tbFlag = true;
+
+                                }
+
+
+                                dm.press1 = data[9];
+                                msg += data[9];
+                                Log.d("ttt", msg);
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
@@ -290,14 +298,16 @@ class MyThread extends Thread {
                     double bz = dm.ahrs.mmz;
                     //int at = 0;
                     //int at = 180+(int)(180.0f/Math.PI*Math.atan2(by, bx));
+
                     int at = (int)dm.ahrs.tb + (int)(180.0f/Math.PI*Math.atan2(bz, bx));
                     bv.rotate(2, at);
+                    bv.setPaint(FootProtocol.FOOT_RIGHT,(float)dm.press1/320.0f,0);
                     bv.invalidate();
                     iv.invalidate();
                 }
             });
             try {
-                this.sleep(200);
+                this.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
