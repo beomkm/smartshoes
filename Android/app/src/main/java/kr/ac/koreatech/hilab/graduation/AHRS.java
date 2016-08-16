@@ -70,6 +70,7 @@ public class AHRS {
                 _2q0, _2q1, _2q2, _2q3,
                 _2q0q2, _2q2q3, q0q0, q0q1, q0q2, q0q3, q1q1, q1q2, q1q3, q2q2, q2q3, q3q3;
 
+        /*
         float ax = data[0]*2.0f/32768.0f; // 2 g full range for accelerometer
         float ay = data[1]*2.0f/32768.0f; //<>//
         float az = data[2]*2.0f/32768.0f;
@@ -80,6 +81,12 @@ public class AHRS {
         //float my = data[7]*10.0f*1229.0f/4096.0f + 70.0f; // apply calibration offsets in mG that correspond to your environment and magnetometer
         float my = data[7]*10.0f*1229.0f/4096.0f + 70.0f; // apply calibration offsets in mG that correspond to your environment and magnetometer
         float mz = data[8]*10.0f*1229.0f/4096.0f + tz;
+        */
+
+        float mx = data[0]*10.0f*1229.0f/4096.0f + tx; // milliGauss (1229 microTesla per 2^12 bits, 10 mG per microTesla)
+        //float my = data[7]*10.0f*1229.0f/4096.0f + 70.0f; // apply calibration offsets in mG that correspond to your environment and magnetometer
+        float my = data[1]*10.0f*1229.0f/4096.0f + 70.0f; // apply calibration offsets in mG that correspond to your environment and magnetometer
+        float mz = data[2]*10.0f*1229.0f/4096.0f + tz;
 
         mmx = mx;
         mmy = my;

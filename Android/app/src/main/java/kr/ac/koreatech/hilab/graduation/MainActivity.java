@@ -25,7 +25,8 @@ import java.net.Socket;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
     static final int PORT = 12345;
-    static final int NUM_DATA = 11;
+    //static final int NUM_DATA = 11;
+    static final int NUM_DATA = 5;
 
     private ServerSocket serversocket;
     private Socket socket;
@@ -156,8 +157,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 }
 
 
-                                dm.press1 = data[9];
-                                msg += data[9];
+                                dm.press1 = data[3];
+                                msg += data[3];
                                 Log.d("ttt", msg);
                                 runOnUiThread(new Runnable() {
                                     @Override

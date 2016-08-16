@@ -101,7 +101,7 @@ void loop() {
     //Serial.println(UpVo);
     //Serial.println(ax);
    
-   
+    /*
     datas[0] = lowByte(ax);
     datas[1] = highByte(ax);
     datas[2] = lowByte(ay);
@@ -130,11 +130,24 @@ void loop() {
     datas[21] = highByte((int)DownVo);
    
     datas[22] = 0;
-
+    */
+    datas[0] = lowByte(mx);
+    datas[1] = highByte(mx);
+    datas[2] = lowByte(my);
+    datas[3] = highByte(my);
+    datas[4] = lowByte(mz);
+    datas[5] = highByte(mz);
+    
+    datas[6] = lowByte((int)UpVo);
+    datas[7] = highByte((int)UpVo);
+    datas[8] = lowByte((int)DownVo);
+    datas[9] = highByte((int)DownVo);
+   
+    datas[10] = 0;
    //Serial.println(ax);
    
    
-    for(i=0; i<22; i++) {
+    for(i=0; i<10; i++) {
       if(datas[i]==0) datas[i] = 0x80;
       else if(datas[i]==0x80) datas[i] = 0x81;
     }
