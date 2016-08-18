@@ -1,6 +1,7 @@
 package kr.ac.koreatech.hilab.graduation;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
@@ -11,10 +12,12 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.io.DataInputStream;
@@ -94,6 +97,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onStart();
 
 
+        final Dialog loadingDlg = new Dialog(this, R.style.TransDialog);
+        loadingDlg.setContentView(R.layout.layout_dialog);
+        //ProgressBar pb = new ProgressBar(this);
+        //TextView tv = new TextView(this);
+        //tv.setText("연결 대기중...");
+
+        //ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
+                //ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        //loadingDlg.addContentView(pb, lp1);
+        //loadingDlg.addContentView(tv, lp2);
+        loadingDlg.show();
+
+
+
         MyThread th = new MyThread(fv, img);
         th.start();
 
@@ -110,9 +127,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         e.printStackTrace();
                     }
                     try {
-                        socket = serversocket.accept();
 
+
+                        socket = serversocket.accept();
                         isConnected = true;
+                        loadingDlg.dismiss();
+
                         Log.d("ttt", "accepted");
 
                         is = new DataInputStream(socket.getInputStream());
