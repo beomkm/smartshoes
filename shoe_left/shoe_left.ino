@@ -4,8 +4,8 @@
 #include <I2Cdev.h>
 #include <MPU6050.h>
 
-#define AP_RECONN_TIME 4
-#define SV_RECONN_TIME 4
+#define AP_RECONN_TIME 3
+#define SV_RECONN_TIME 3
 
 //imu
 MPU6050 accelgyro;
@@ -145,7 +145,7 @@ void loop() {
     client.stop();
     sendable = 0;
     
-    delay(1000);
+    delay(500);
     Serial.println("Trying to reconnect..");
     connectSv();
   }

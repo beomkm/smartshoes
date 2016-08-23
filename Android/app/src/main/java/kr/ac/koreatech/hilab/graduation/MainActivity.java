@@ -193,16 +193,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 count = 0;
                             }
 
-                                /*
-                                if(is.available() >= 20) {
-                                    msg = "";
-                                    for (int i = 0; i < 10; i++) {
-                                        data[i] = is.readByte() | is.readByte() << 8;
-                                        msg += data[i] + " ";
-                                    }
-                                }
-                                */
-
                         } catch (IOException e) {
                             // TODO Auto-generated catch block
                             e.printStackTrace();

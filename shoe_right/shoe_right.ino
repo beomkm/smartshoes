@@ -170,5 +170,5 @@ void loop() {
     Serial.println("Trying to reconnect..");
     connectSv();
   }
-  delay(100);
+  delay(50);
 }
