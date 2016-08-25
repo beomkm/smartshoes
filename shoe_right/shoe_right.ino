@@ -145,8 +145,7 @@ void loop() {
    
     datas[10] = 0;
    //Serial.println(ax);
-   
-   
+  
     for(i=0; i<10; i++) {
       if(datas[i]==0) datas[i] = 0x80;
       else if(datas[i]==0x80) datas[i] = 0x81;
@@ -170,5 +169,5 @@ void loop() {
     Serial.println("Trying to reconnect..");
     connectSv();
   }
-  delay(50);
+  delay(100);
 }

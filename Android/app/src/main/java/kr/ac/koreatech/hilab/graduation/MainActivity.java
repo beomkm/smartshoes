@@ -48,7 +48,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private EditText z;
     private EditText b;
 
-    Button changeBtn;
+    private boolean inited = false;
+
+    public Button changeBtn;
 
     int angle = 0;
     int power = 0;
@@ -167,19 +169,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                     //msg += data[i] + " ";
                                 }
                                 //Log.d("ttt", msg);
-                                dm.ahrs.calcQuaternion(data);
+                                dm.ahrsR.calcQuaternion(data);
                                 //msg += dm.ahrs.q[0]+"  "+dm.ahrs.q[1]+"  "+dm.ahrs.q[2]+"  "+dm.ahrs.q[3];
 
-                                if(!dm.ahrs.tbFlag) {
-                                    dm.ahrs.tb = -(float)(180.0f/Math.PI*Math.atan2(dm.ahrs.mmz, dm.ahrs.mmx));
-                                    dm.ahrs.tbFlag = true;
+                                if(!dm.ahrsR.tbFlag) {
+                                    dm.ahrsR.tb = -(float)(180.0f/Math.PI*Math.atan2(dm.ahrsR.mmz, dm.ahrsR.mmx));
+                                    dm.ahrsR.tbFlag = true;
 
                                 }
 
 
-                                dm.press1 = data[3];
-                                dm.press2 = data[4];
-                                msg += data[3]+" "+data[4];
+                                dm.press1R = data[3];
+                                dm.press2R = data[4];
+                                msg += data[0]+" "+data[1]+" "+data[2]+" "+data[3]+" "+data[4];
                                 Log.d("ttt", msg);
                                 runOnUiThread(new Runnable() {
                                     @Override
@@ -189,6 +191,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                                     }
                                 });
+
+                                //if press > threshold
+                                //mmxFix = mmx;
+                                //mmyFix = mmy;
+                                //mmzFix = mmz;
+                                if(dm.press1L+dm.press1R>-1 || !inited) {
+                                    dm.ahrsR.mmxFix = dm.ahrsR.mmx;
+                                    dm.ahrsR.mmyFix = dm.ahrsR.mmy;
+                                    dm.ahrsR.mmzFix = dm.ahrsR.mmz;
+                                    inited = true;
+                                }
 
                                 count = 0;
                             }
@@ -240,9 +253,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch(v.getId()) {
             case R.id.changeBtn :
                 final DataManager dm = DataManager.getInstance();
-                dm.ahrs.tx = (float)Integer.parseInt(x.getText().toString());
-                dm.ahrs.tz = (float)Integer.parseInt(z.getText().toString());
-                dm.ahrs.tb = (float)Integer.parseInt(b.getText().toString());
+                dm.ahrsR.tx = (float)Integer.parseInt(x.getText().toString());
+                dm.ahrsR.tz = (float)Integer.parseInt(z.getText().toString());
+                dm.ahrsR.tb = (float)Integer.parseInt(b.getText().toString());
                 Log.d("ttt","rr");
 
                 break;
@@ -305,17 +318,19 @@ class MyThread extends Thread {
 
                     //double bz = 180.0f;
                     //double bx = dm.ahrs.mmx/Math.cos(20.0f/180.0f*Math.PI)-bz*Math.tan(20.0f/180.0f*Math.PI);
-                    double bx = dm.ahrs.mmx;
-                    double by = dm.ahrs.mmy;
-                    double bz = dm.ahrs.mmz;
+                    double bx = dm.ahrsR.mmx;
+                    double by = dm.ahrsR.mmy;
+                    double bz = dm.ahrsR.mmz;
+
                     //int at = 0;
                     //int at = 180+(int)(180.0f/Math.PI*Math.atan2(by, bx));
 
-                    int at = (int)dm.ahrs.tb + (int)(180.0f/Math.PI*Math.atan2(bz, bx));
+                    int at = (int)dm.ahrsR.tb + (int)(180.0f/Math.PI*Math.atan2(bz, bx));
                     bv.rotate(2, at);
-                    bv.setPaint(FootProtocol.FOOT_RIGHT,(float)dm.press1/300.0f, (float)dm.press2/200.0f);
+                    bv.setPaint(FootProtocol.FOOT_RIGHT,(float)dm.press1R/300.0f, (float)dm.press2R/200.0f);
                     bv.invalidate();
                     iv.invalidate();
+
                 }
             });
             try {

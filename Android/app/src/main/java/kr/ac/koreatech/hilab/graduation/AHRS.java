@@ -8,6 +8,9 @@ public class AHRS {
     public float mmx;
     public float mmy;
     public float mmz;
+    public float mmxFix;
+    public float mmyFix;
+    public float mmzFix;
 
     public float tx;
     public float tz;
@@ -32,6 +35,10 @@ public class AHRS {
         mmx = 0.0f;
         mmy = 0.0f;
         mmz = 0.0f;
+
+        mmxFix = 0.0f;
+        mmyFix = 0.0f;
+        mmzFix = 0.0f;
         //roll = 0.0f;
         //pitch = 0.0f;
 

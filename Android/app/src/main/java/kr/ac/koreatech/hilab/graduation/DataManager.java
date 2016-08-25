@@ -1,21 +1,35 @@
 package kr.ac.koreatech.hilab.graduation;
 
+
+import java.util.Queue;
+
 /**
  * Created by byk on 2016-08-09.
  */
 public class DataManager {
 
     private static DataManager instance;
-    public AHRS ahrs;
-    public int press1;
-    public int press2;
+
+    public AHRS ahrsL;
+    public AHRS ahrsR;
+
+    public int press1L;
+    public int press1R;
+    public int press2L;
+    public int press2R;
+
+    public Queue<Dataset> dataQL;
+
 
     private DataManager() {}
 
     private void init() {
-        ahrs = new AHRS();
-        press1 = 0;
-        press2 = 0;
+        ahrsL = new AHRS();
+        ahrsR = new AHRS();
+        press1R = 0;
+        press2R = 0;
+
+
     }
 
     public static DataManager getInstance() {
@@ -25,4 +39,10 @@ public class DataManager {
         }
         return instance;
     }
+}
+
+class Dataset
+{
+    public int test1;
+    public Dataset() {}
 }
