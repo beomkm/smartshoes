@@ -43,8 +43,11 @@ public class LinearGraphView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        canvas.drawLine(0, 0, 20, 20, paint);
-        canvas.drawLine(20, 0, 0, 20, paint);
+        canvas.drawLine(0, 0, 50, 50, paint);
+        canvas.drawLine(50, 50, 0, 0, paint);
+        canvas.drawLine(50, 50, 100, 0, paint);
+        canvas.drawLine(100, 0, 150, 50, paint);
+        canvas.drawLine(150, 50, 200, 0, paint);
 
         super.onDraw(canvas);
     }

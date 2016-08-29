@@ -35,13 +35,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Socket socket;
     private DataInputStream is;
 
-    private ImageView img;
+
     private TextView text_msg;
     private Thread mThread;
 
-    private String msg = "";
-    private FootprintView fv;
     boolean isConnected = false;
+    private String msg = "";
+
+    private ImageView img;
+    private ViewGroup vg;
+    private FootprintView fv;
+    private LinearGraphView lgv;
+
+
 
 
     private EditText x;
@@ -59,11 +65,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
 
         fv = new FootprintView(this);
-        setContentView(R.layout.activity_main);
         addContentView(fv, new LinearLayout.LayoutParams(0, 0));
         img = (ImageView) findViewById(R.id.img);
+        fv.setImageView(img);
+
+        lgv = new LinearGraphView(this);
+        vg = (ViewGroup)findViewById(R.id.linearGraph);
+        vg.addView(lgv);
+        vg.invalidate();
+
 
         changeBtn = (Button)findViewById(R.id.changeBtn);
         changeBtn.setOnClickListener(this);
@@ -74,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
 
-        fv.setImageView(img);
+
         //img.setImageBitmap();
         //text_msg= (TextView)findViewById(R.id.massage);
 

@@ -29,9 +29,10 @@
         android:layout_alignParentStart="true"
         android:layout_marginTop="22dp" />
 
-    <ImageView
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="100dp"
+        android:orientation="vertical"
 
         android:id="@+id/linearGraph"
         android:layout_below="@+id/img"
@@ -46,8 +47,8 @@
         android:inputType="numberSigned"
         android:ems="10"
         android:id="@+id/editTextx"
-        android:layout_toRightOf="@+id/img"
-        android:layout_toEndOf="@+id/img"
+        android:layout_toRightOf="@+id/linearGraph"
+        android:layout_toEndOf="@+id/linearGraph"
         android:text="x" />
 
     <EditText
@@ -78,8 +79,8 @@
         android:text="New Button"
         android:id="@+id/changeBtn"
         android:layout_alignParentBottom="true"
-        android:layout_toRightOf="@+id/img"
-        android:layout_toEndOf="@+id/img"
+        android:layout_toRightOf="@+id/linearGraph"
+        android:layout_toEndOf="@+id/linearGraph"
         android:layout_marginBottom="54dp"
         android:onClick="onClick2"/>
 
