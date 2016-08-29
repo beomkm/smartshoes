@@ -19,14 +19,33 @@ import android.widget.ImageView;
 public class LinearGraphView extends View {
 
     private ImageView imgView;
-    Paint paint = new Paint();
+    private Paint adjPaint;
+    private Paint leftPaint;
+    private Paint rightPaint;
+    private int[] leftData;
+    private int[] rightData;
+
 
     public LinearGraphView(Context context){
         super(context);
         setFocusable(true);
         setBackgroundColor(0x00000000);
 
-        paint.setColor(Color.BLACK);
+        adjPaint = new Paint();
+        leftPaint = new Paint();
+        rightPaint = new Paint();
+
+        adjPaint.setStrokeWidth(3);
+        leftPaint.setStrokeWidth(4);
+        rightPaint.setStrokeWidth(4);
+
+        adjPaint.setStrokeCap(Paint.Cap.ROUND);
+        leftPaint.setStrokeCap(Paint.Cap.ROUND);
+        rightPaint.setStrokeCap(Paint.Cap.ROUND);
+
+        adjPaint.setColor(0xFFAAAAAA);
+        leftPaint.setColor(0xFFCC3333);
+        rightPaint.setColor(0xFF3333CC);
 
     }
 
@@ -41,13 +60,23 @@ public class LinearGraphView extends View {
         imgView = iv;
     }
 
+    public void setDataArray(int[] left, int[] right)
+    {
+        leftData = left;
+        rightData = right;
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
-        canvas.drawLine(0, 0, 50, 50, paint);
-        canvas.drawLine(50, 50, 0, 0, paint);
-        canvas.drawLine(50, 50, 100, 0, paint);
-        canvas.drawLine(100, 0, 150, 50, paint);
-        canvas.drawLine(150, 50, 200, 0, paint);
+
+        canvas.drawLine(30, 10, 30, 210, adjPaint);
+        canvas.drawLine(30, 210, 630, 210, adjPaint);
+        if(leftData != null && rightData != null) {
+            for(int i=0; i<rightData.length-1; i++) {
+                canvas.drawLine(i+30, 210-rightData[i], i+31, 210-rightData[i+1], rightPaint);
+            }
+        }
+
 
         super.onDraw(canvas);
     }

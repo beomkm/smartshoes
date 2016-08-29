@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
 
-        MyThread th = new MyThread(fv, img);
+        MyThread th = new MyThread(fv, img, lgv, vg);
         th.start();
 
         mThread = new Thread(new Runnable() {
@@ -195,6 +195,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                                 dm.press1R = data[3];
                                 dm.press2R = data[4];
+
+                                for(int i=0; i<599; i++) {
+                                    dm.pressArrR[i] = dm.pressArrR[i+1];
+                                }
+                                dm.pressArrR[599] = (dm.press1R + dm.press2R)/2;
+
                                 msg += data[0]+" "+data[1]+" "+data[2]+" "+data[3]+" "+data[4];
                                 Log.d("ttt", msg);
                                 runOnUiThread(new Runnable() {
@@ -302,19 +308,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 class MyThread extends Thread {
     private FootprintView bv;
     private ImageView iv;
+    private LinearGraphView lgv;
+    private ViewGroup vg;
+
     private int angle;
     private float power;
 
-    MyThread(FootprintView bv, ImageView iv) {
+    MyThread(FootprintView bv, ImageView iv, LinearGraphView lgv, ViewGroup vg) {
         angle = 0;
         power = 0f;
         this.bv = bv;
         this.iv = iv;
+        this.lgv = lgv;
+        this.vg = vg;
     }
 
     @Override
     public void run() {
         final DataManager dm = DataManager.getInstance();
+        lgv.setDataArray(dm.pressArrL, dm.pressArrR);
+
         while(true) {
             //Log.d("info", "MyThread running");
             new Handler(Looper.getMainLooper()).post(new Runnable() {
@@ -339,11 +352,13 @@ class MyThread extends Thread {
                     //int at = 0;
                     //int at = 180+(int)(180.0f/Math.PI*Math.atan2(by, bx));
 
-                    int at = (int)dm.ahrsR.tb + (int)(180.0f/Math.PI*Math.atan2(bz, bx));
+                    int at = (int)dm.ahrsR.tb + (int)(180.0f/Math.PI*Math.atan2(bz, -bx));
                     bv.rotate(2, at);
                     bv.setPaint(FootProtocol.FOOT_RIGHT,(float)dm.press1R/300.0f, (float)dm.press2R/200.0f);
                     bv.invalidate();
                     iv.invalidate();
+                    lgv.invalidate();
+                    vg.invalidate();
 
                 }
             });

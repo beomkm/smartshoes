@@ -18,7 +18,8 @@ public class DataManager {
     public int press2L;
     public int press2R;
 
-    public Queue<Dataset> dataQL;
+    public int[] pressArrR;
+    public int[] pressArrL;
 
 
     private DataManager() {}
@@ -28,7 +29,8 @@ public class DataManager {
         ahrsR = new AHRS();
         press1R = 0;
         press2R = 0;
-
+        pressArrR = new int[600];
+        pressArrL = new int[600];
 
     }
 
@@ -39,10 +41,4 @@ public class DataManager {
         }
         return instance;
     }
-}
-
-class Dataset
-{
-    public int test1;
-    public Dataset() {}
 }
