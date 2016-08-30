@@ -18,7 +18,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.io.DataInputStream;
@@ -123,14 +122,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //tv.setText("연결 대기중...");
 
         //ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
-                //ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        //ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         //loadingDlg.addContentView(pb, lp1);
         //loadingDlg.addContentView(tv, lp2);
         loadingDlg.show();
 
 
 
-        MyThread th = new MyThread(fv, img, lgv, vg);
+        DisplayThread th = new DisplayThread(fv, img, lgv, vg);
         th.start();
 
         mThread = new Thread(new Runnable() {
@@ -308,7 +307,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
 
-class MyThread extends Thread {
+class DisplayThread extends Thread {
     private FootprintView bv;
     private ImageView iv;
     private LinearGraphView lgv;
@@ -317,7 +316,7 @@ class MyThread extends Thread {
     private int angle;
     private float power;
 
-    MyThread(FootprintView bv, ImageView iv, LinearGraphView lgv, ViewGroup vg) {
+    public DisplayThread(FootprintView bv, ImageView iv, LinearGraphView lgv, ViewGroup vg) {
         angle = 0;
         power = 0f;
         this.bv = bv;
@@ -332,7 +331,7 @@ class MyThread extends Thread {
         lgv.setDataArray(dm.pressArrL, dm.pressArrR);
 
         while(true) {
-            //Log.d("info", "MyThread running");
+
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
                 public void run() {
