@@ -22,8 +22,10 @@ import android.widget.TextView;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -33,13 +35,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private ServerSocket serversocket;
     private Socket socket;
+    private ArrayList<Socket> sockList;
     private DataInputStream is;
 
 
     private TextView text_msg;
     private Thread mThread;
+    private ArrayList<ClientThread> thList;
 
-    boolean isConnected = false;
+    boolean isConnectedLeft = false;
+    boolean isConnectedRight = false;
     private String msg = "";
 
     private ImageView img;
@@ -88,7 +93,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         z = (EditText)findViewById(R.id.editTextz);
         b = (EditText)findViewById(R.id.editTextb);
 
-
+        sockList = new ArrayList<Socket>();
+        thList = new ArrayList<ClientThread>();
 
 
         //img.setImageBitmap();
@@ -132,121 +138,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         DisplayThread th = new DisplayThread(fv, img, lgv, vg);
         th.start();
 
+
+
         mThread = new Thread(new Runnable() {
             @Override
             public void run() {
-
-                if(!mThread.isInterrupted()) {
-                    // TODO Auto-generated method stub
+                try {
+                    serversocket = new ServerSocket(PORT, 5, null);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                while(!mThread.isInterrupted()) {
                     try {
-                        serversocket = new ServerSocket(PORT, 5, null);
-                    } catch (IOException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-                    try {
-
-
-                        socket = serversocket.accept();
-                        isConnected = true;
-                        loadingDlg.dismiss();
-
-                        Log.d("ttt", "accepted");
-
-                        is = new DataInputStream(socket.getInputStream());
-
-                    } catch (IOException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-                    int[] buf = new int[2*NUM_DATA];
-                    short[] data = new short[NUM_DATA];
-                    int count = 0;
-
-                    int dir = 0;  //1:left , 2:right
-                    try {
-                        dir = is.readByte();
+                        ClientThread cth = new ClientThread(serversocket.accept(), loadingDlg);
+                        thList.add(cth);
+                        cth.start();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-
-                    DataManager dm = DataManager.getInstance();
-
-                    while (isConnected) {
-                        try {
-
-                            buf[count] = is.readByte();
-                            if (buf[count] == -128) buf[count] = 0;
-                            ++count;
-                            if (count >= 2*NUM_DATA) {
-                                msg = "";
-                                for (int i = 0; i < NUM_DATA; i++) {
-                                    data[i] = (short)((buf[i * 2] & 0xFF) | (buf[i * 2 + 1] & 0xFF) << 8);
-                                    //msg += data[i] + " ";
-                                }
-                                //Log.d("ttt", msg);
-                                dm.ahrsR.calcQuaternion(data);
-                                //msg += dm.ahrs.q[0]+"  "+dm.ahrs.q[1]+"  "+dm.ahrs.q[2]+"  "+dm.ahrs.q[3];
-
-                                if(!dm.ahrsR.tbFlag) {
-                                    dm.ahrsR.tb = -(float)(180.0f/Math.PI*Math.atan2(dm.ahrsR.mmz, dm.ahrsR.mmx));
-                                    dm.ahrsR.tbFlag = true;
-
-                                }
-
-
-                                dm.press1R = data[3];
-                                dm.press2R = data[4];
-
-                                for(int i=0; i<599; i++) {
-                                    dm.pressArrR[i] = dm.pressArrR[i+1];
-                                }
-                                dm.pressArrR[599] = (dm.press1R + dm.press2R)/2;
-
-                                msg += data[0]+" "+data[1]+" "+data[2]+" "+data[3]+" "+data[4];
-                                Log.d("ttt", msg);
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        // TODO Auto-generated method stub
-                                        //text_msg.setText(msg);
-
-                                    }
-                                });
-
-                                //if press > threshold
-                                //mmxFix = mmx;
-                                //mmyFix = mmy;
-                                //mmzFix = mmz;
-                                if(dm.press1L+dm.press1R>-1 || !inited) {
-                                    dm.ahrsR.mmxFix = dm.ahrsR.mmx;
-                                    dm.ahrsR.mmyFix = dm.ahrsR.mmy;
-                                    dm.ahrsR.mmzFix = dm.ahrsR.mmz;
-                                    inited = true;
-                                }
-
-                                count = 0;
-                            }
-
-                        } catch (IOException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
-
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                // TODO Auto-generated method stub
-                                //text_msg.setText(msg);
-
-                            }
-                        });
-
-                    }//end while
-                }//end run()
-            }//end run()
+                }
+            }
         });
         mThread.start();
+
     }
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -272,9 +186,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
+        final DataManager dm = DataManager.getInstance();
         switch(v.getId()) {
             case R.id.changeBtn :
-                final DataManager dm = DataManager.getInstance();
                 dm.ahrsR.tx = (float)Integer.parseInt(x.getText().toString());
                 dm.ahrsR.tz = (float)Integer.parseInt(z.getText().toString());
                 dm.ahrsR.tb = (float)Integer.parseInt(b.getText().toString());
@@ -283,14 +197,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.stopBtn :
                 try{
-                    if(isConnected) {
+                    if(dm.isConnectedLeft=true && dm.isConnectedRight) {
                         serversocket.close();
                         Log.d("ttt", "server close");
                         socket.close();
                         Log.d("ttt", "socket close");
                         mThread.interrupt();
+                        for(ClientThread th : thList) {
+                            th.interrupt();
+                        }
                         Log.d("ttt", "thread stop");
-                        isConnected = false;
+                        dm.isConnectedLeft = false;
+                        dm.isConnectedRight = false;
                     }
                 }
                 catch(IOException e){
@@ -305,6 +223,131 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 }
 
 
+class ClientThread extends Thread {
+
+    private Socket sock;
+    private int dir;
+    private Dialog loadingDlg;
+    private boolean isConnected;
+    private boolean inited;
+
+    public ClientThread(Socket sock, Dialog loadingDlg) {
+        this.sock = sock;
+        this.loadingDlg = loadingDlg;
+        inited = false;
+    }
+
+    @Override
+    public void run() {
+        DataManager dm = DataManager.getInstance();
+        String msg;
+
+        if(!Thread.currentThread().isInterrupted()) {
+
+
+
+            Log.d("ttt", "accepted");
+
+            DataInputStream is = null;
+            try {
+                is = new DataInputStream(sock.getInputStream());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+            int[] buf = new int[2*FootProtocol.NUM_DATA];
+            short[] data = new short[FootProtocol.NUM_DATA];
+            int count = 0;
+
+            try {
+                dir = is.readByte();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            isConnected = true;
+            if(dir == FootProtocol.FOOT_LEFT) {
+                dm.isConnectedLeft = true;
+            }
+            else if(dir == FootProtocol.FOOT_RIGHT) {
+                dm.isConnectedRight = true;
+            }
+            if(dm.isConnectedLeft=true && dm.isConnectedRight) {
+                loadingDlg.dismiss();
+            }
+
+            while (isConnected) {
+                try {
+                    buf[count] = is.readByte();
+                    if (buf[count] == -128) buf[count] = 0;
+                    ++count;
+                    if (count >= 2*FootProtocol.NUM_DATA) {
+                        msg = "";
+                        for (int i = 0; i < FootProtocol.NUM_DATA; i++) {
+                            data[i] = (short)((buf[i * 2] & 0xFF) | (buf[i * 2 + 1] & 0xFF) << 8);
+                            //msg += data[i] + " ";
+                        }
+
+                        if(dir == FootProtocol.FOOT_RIGHT) {
+                            dm.ahrsR.calcQuaternion(data);
+                            if (!dm.ahrsR.tbFlag) {
+                                Log.d("ttt","@@@\n@@@@\n@@@@\n@@@@\n@@@@@@@@@@@@");
+                                dm.ahrsR.tb = -(float) (180.0f / Math.PI * Math.atan2(dm.ahrsR.mmz, -dm.ahrsR.mmx));
+                                dm.ahrsR.tbFlag = true;
+
+                            }
+                            dm.pressR1 = data[3];
+                            dm.pressR2 = data[4];
+
+                            for (int i = 0; i < 599; i++) {
+                                dm.pressArrR[i] = dm.pressArrR[i + 1];
+                            }
+                            dm.pressArrR[599] = (dm.pressR1 + dm.pressR2) / 2;
+
+                            if (dm.pressR1 + dm.pressR2 > -1 || !inited) {
+                                dm.ahrsR.mmxFix = dm.ahrsR.mmx;
+                                dm.ahrsR.mmyFix = dm.ahrsR.mmy;
+                                dm.ahrsR.mmzFix = dm.ahrsR.mmz;
+                                inited = true;
+                            }
+                            count = 0;
+                        }
+                        else if(dir == FootProtocol.FOOT_LEFT) {
+                            dm.ahrsL.calcQuaternion(data);
+                            if (!dm.ahrsL.tbFlag) {
+                                dm.ahrsL.tb = -(float) (180.0f / Math.PI * Math.atan2(dm.ahrsL.mmz, dm.ahrsL.mmx));
+                                dm.ahrsL.tbFlag = true;
+
+                            }
+                            dm.pressL1 = data[3];
+                            dm.pressL2 = data[4];
+
+                            for (int i = 0; i < 599; i++) {
+                                dm.pressArrL[i] = dm.pressArrL[i + 1];
+                            }
+                            dm.pressArrL[599] = (dm.pressL1 + dm.pressL2) / 2;
+
+
+                            if (dm.pressL1 + dm.pressL2 > -1 || !inited) {
+                                dm.ahrsL.mmxFix = dm.ahrsL.mmx;
+                                dm.ahrsL.mmyFix = dm.ahrsL.mmy;
+                                dm.ahrsL.mmzFix = dm.ahrsL.mmz;
+                                inited = true;
+                            }
+                            count = 0;
+                        }
+                    }
+
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+
+            }//end while
+        }//end run()
+    }//end run()
+}
 
 
 class DisplayThread extends Thread {
@@ -356,7 +399,7 @@ class DisplayThread extends Thread {
 
                     int at = (int)dm.ahrsR.tb + (int)(180.0f/Math.PI*Math.atan2(bz, -bx));
                     bv.rotate(2, at);
-                    bv.setPaint(FootProtocol.FOOT_RIGHT,(float)dm.press1R/300.0f, (float)dm.press2R/200.0f);
+                    bv.setPaint(FootProtocol.FOOT_RIGHT,(float)dm.pressR1/300.0f, (float)dm.pressR2/200.0f);
                     bv.invalidate();
                     iv.invalidate();
                     lgv.invalidate();

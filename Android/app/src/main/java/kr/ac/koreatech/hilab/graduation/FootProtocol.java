@@ -6,4 +6,5 @@ package kr.ac.koreatech.hilab.graduation;
 public class FootProtocol {
     public static final int FOOT_LEFT = 1;
     public static final int FOOT_RIGHT = 2;
+    public static final int NUM_DATA = 5;
 }

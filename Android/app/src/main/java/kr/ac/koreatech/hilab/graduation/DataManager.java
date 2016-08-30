@@ -13,22 +13,26 @@ public class DataManager {
     public AHRS ahrsL;
     public AHRS ahrsR;
 
-    public int press1L;
-    public int press1R;
-    public int press2L;
-    public int press2R;
+    public int pressL1;
+    public int pressL2;
+    public int pressR1;
+    public int pressR2;
 
     public int[] pressArrR;
     public int[] pressArrL;
 
+    public boolean isConnectedLeft;
+    public boolean isConnectedRight;
 
     private DataManager() {}
 
     private void init() {
         ahrsL = new AHRS();
         ahrsR = new AHRS();
-        press1R = 0;
-        press2R = 0;
+        pressL1 = 0;
+        pressL2 = 0;
+        pressR1 = 0;
+        pressR2 = 0;
         pressArrR = new int[600];
         pressArrL = new int[600];
 
