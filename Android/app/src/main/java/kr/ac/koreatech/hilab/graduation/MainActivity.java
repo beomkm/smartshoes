@@ -398,7 +398,7 @@ class DisplayThread extends Thread {
                     //int at = 180+(int)(180.0f/Math.PI*Math.atan2(by, bx));
 
                     int at = (int)dm.ahrsR.tb + (int)(180.0f/Math.PI*Math.atan2(bz, -bx));
-                    bv.rotate(2, at);
+                    bv.rotateAndPaint(2, at, (float)dm.pressR1/300.0f, (float)dm.pressR2/200.0f);
                     //bv.setPaint(FootProtocol.FOOT_RIGHT,(float)dm.pressR1/300.0f, (float)dm.pressR2/200.0f);
                     bv.invalidate();
                     iv.invalidate();

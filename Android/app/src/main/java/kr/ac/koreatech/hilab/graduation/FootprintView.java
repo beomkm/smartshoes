@@ -16,8 +16,8 @@ import android.widget.ImageView;
  * Created by Park on 2016-07-28.
  */
 public class FootprintView extends View {
-    private final int COLOR_L = 0xFF2222DD;
-    private final int COLOR_H = 0xFFDD2222;
+    private final int COLOR_L = 0xFF0000FF;
+    private final int COLOR_H = 0xFFFF0000;
     private final int COLOR_L_A = COLOR_L>>24&0xFF;
     private final int COLOR_L_R = COLOR_L>>16&0xFF;
     private final int COLOR_L_G = COLOR_L>>8&0xFF;
@@ -52,6 +52,7 @@ public class FootprintView extends View {
 
     double[] sine = new double[360];
     double[] cosine = new double[360];
+    int[] root = new int[160000];
 
     public FootprintView(Context context){
         super(context);
@@ -60,11 +61,13 @@ public class FootprintView extends View {
         setBackgroundColor(0x00000000);
 
 
-        for(int deg = 0 ; deg < 360; deg++)
-        {
+        for(int deg = 0 ; deg < 360; deg++) {
             double rad = deg * Math.PI / 180;
             sine[deg] = Math.sin(rad);
             cosine[deg] = Math.cos(rad);
+        }
+        for(int i=0; i<160000; i++) {
+            root[i] = (int)Math.sqrt(i);
         }
 
         Log.d("ttt", "Con2");
@@ -107,7 +110,7 @@ public class FootprintView extends View {
     }
 
 
-    public int rotate(int dir, int degree)
+    public int rotateAndPaint(int dir, int degree, float u, float l)
     {
 
         Bitmap uBitmap;
@@ -139,13 +142,13 @@ public class FootprintView extends View {
 
 
         uBitmap.getPixels(oldData, 0, 400, 0, 0, uBitmap.getWidth(), uBitmap.getHeight());
-        rotate2D(newData, oldData, width, height, degree, cx, cy);
+        rotate2DAndPaint(newData, oldData, width, height, degree, cx, cy, dir, u, l);
         uBitmap.setPixels(newData, 0, 400, 0, 0, uBitmap.getWidth(), uBitmap.getHeight());
 
 
 
         lBitmap.getPixels(oldData, 0, 400, 0, 0, lBitmap.getWidth(), lBitmap.getHeight());
-        rotate2D(newData, oldData, width, height, degree, cx, cy);
+        rotate2DAndPaint(newData, oldData, width, height, degree, cx, cy, dir, u, l);
         lBitmap.setPixels(newData, 0, 400, 0, 0, lBitmap.getWidth(), lBitmap.getHeight());
 
 
@@ -164,7 +167,7 @@ public class FootprintView extends View {
     }
 
 
-    private void rotate2D(int[] dest, int[] src, int width, int height, int deg, int cx, int cy) {
+    private void rotate2DAndPaint(int[] dest, int[] src, int width, int height, int deg, int cx, int cy, int dir, float u, float l) {
         int px, py;
         deg %= 360;
         if(deg<0) deg += 360;
@@ -176,7 +179,34 @@ public class FootprintView extends View {
                     dest[i*width+j] = 0x00000000; //transparent
                 }
                 else {
-                    dest[i*width+j] = src[py*width+px];
+                    int dux, duy, dlx, dly; //delta upper/lower x/y
+                    if(dir == FootProtocol.FOOT_LEFT) {
+                        dux = px - FootProtocol.SENSOR_LUX;
+                        duy = py - FootProtocol.SENSOR_LUY;
+                        dlx = px - FootProtocol.SENSOR_LLX;
+                        dly = py - FootProtocol.SENSOR_LLY;
+                    }
+                    else {  //FootProtocol.FOOT_RIGHT
+                        dux = px - FootProtocol.SENSOR_RUX;
+                        duy = py - FootProtocol.SENSOR_RUY;
+                        dlx = px - FootProtocol.SENSOR_RLX;
+                        dly = py - FootProtocol.SENSOR_RLY;
+                    }
+                    float colorU = (float)u-(float)root[dux*dux+duy*duy]/500;
+                    float colorL = (float)l-(float)root[dlx*dlx+dly*dly]/500;
+
+                    if(colorU<0) colorU = 0;
+                    if(colorL<0) colorL = 0;
+
+                    float color = colorU + colorL;
+                    if(color>1) color = 1;
+
+                    //int a = (int)(COLOR_L_A*(1-color) + COLOR_H_A*color);
+                    int r = (int)(COLOR_L_R*(1-color) + COLOR_H_R*color);
+                    int g = (int)(COLOR_L_G*(1-color) + COLOR_H_G*color);
+                    int b = (int)(COLOR_L_B*(1-color) + COLOR_H_B*color);
+
+                    dest[i*width+j] = src[py*width+px] | r<<16 | g<<8 | b;
                 }
             }
         }
