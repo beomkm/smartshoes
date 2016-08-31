@@ -138,8 +138,6 @@ public class FootprintView extends View {
         cy = height/2;  //centre : middle
 
 
-
-
         uBitmap.getPixels(oldData, 0, 400, 0, 0, uBitmap.getWidth(), uBitmap.getHeight());
         rotate2D(newData, oldData, width, height, degree, cx, cy);
         uBitmap.setPixels(newData, 0, 400, 0, 0, uBitmap.getWidth(), uBitmap.getHeight());
@@ -162,38 +160,6 @@ public class FootprintView extends View {
         else
             return -1;
 
-        /*
-
-        ruBitmap = Bitmap.createScaledBitmap(ruBitmapOrg, 400, 400, false);
-        rlBitmap = Bitmap.createScaledBitmap(rlBitmapOrg, 400, 400, false);
-
-        int[] oldData, newData;
-        int width, height;
-        int cx, cy;
-
-        oldData = new int[ruBitmap.getWidth() * ruBitmap.getHeight()];
-        newData = new int[ruBitmap.getWidth() * ruBitmap.getHeight()];
-
-
-        width = ruBitmap.getWidth();
-        height = ruBitmap.getHeight();
-        cx = width/2;
-        cy = height/2;  //centre : middle
-
-
-
-
-        ruBitmap.getPixels(oldData, 0, 400, 0, 0, ruBitmap.getWidth(), ruBitmap.getHeight());
-        rotate2D(newData, oldData, width, height, degree, cx, cy);
-        ruBitmap.setPixels(newData, 0, 400, 0, 0, ruBitmap.getWidth(), ruBitmap.getHeight());
-
-
-
-        rlBitmap.getPixels(oldData, 0, 400, 0, 0, rlBitmap.getWidth(), rlBitmap.getHeight());
-        rotate2D(newData, oldData, width, height, degree, cx, cy);
-        rlBitmap.setPixels(newData, 0, 400, 0, 0, rlBitmap.getWidth(), rlBitmap.getHeight());
-
-        */
         return 0;
     }
 

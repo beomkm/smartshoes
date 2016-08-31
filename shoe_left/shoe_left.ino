@@ -68,7 +68,7 @@ void setup() {
   Serial.println("Attempting to connect to AP");
   Serial.print("SSID: ");
   Serial.println(ssid);
-  
+
   while(1) {
     status = WiFi.begin(ssid, pass);
     if (status != WL_CONNECTED) { 
@@ -86,19 +86,22 @@ void loop() {
   int i;
   
   //imu
+  
   accelgyro.getMotion9(&ax, &ay, &az, &gx, &gy, &gz, &mx, &my, &mz);
-   
+
+  
   //pressure
   UpVo = analogRead(UpFSRpin);
   DownVo = analogRead(DownFSRpin);
-  UpRfsr = ((9.78 * UpVo)/(1-(UpVo/1023.0)));
-  DownRfsr = ((9.78 * DownVo)/(1-(DownVo/1023.0)));
+  //UpRfsr = ((9.78 * UpVo)/(1-(UpVo/1023.0)));
+  //DownRfsr = ((9.78 * DownVo)/(1-(DownVo/1023.0)));
 
   //sendable = 1;
   if(sendable) {
-    //Serial.println(Vo);
+    //Serial.println(DownVo);
     //Serial.println(ax);
    
+    /*
     datas[0] = lowByte(ax);
     datas[1] = highByte(ax);
     datas[2] = lowByte(ay);
@@ -113,6 +116,7 @@ void loop() {
     datas[10] = lowByte(gz);
     datas[11] = highByte(gz);
     
+    
     datas[12] = lowByte(mx);
     datas[13] = highByte(mx);
     datas[14] = lowByte(my);
@@ -125,14 +129,30 @@ void loop() {
     datas[20] = lowByte((int)DownVo);
     datas[21] = highByte((int)DownVo);
    
+    datas[22] = 0;
+    */
+    datas[0] = lowByte(mx);
+    datas[1] = highByte(mx);
+    datas[2] = lowByte(my);
+    datas[3] = highByte(my);
+    datas[4] = lowByte(mz);
+    datas[5] = highByte(mz);
+    
+    datas[6] = lowByte((int)UpVo);
+    datas[7] = highByte((int)UpVo);
+    datas[8] = lowByte((int)DownVo);
+    datas[9] = highByte((int)DownVo);
+   
+    datas[10] = 0;
    //Serial.println(ax);
-   
-   
-    for(i=0; i<22; i++) {
+  
+    for(i=0; i<10; i++) {
       if(datas[i]==0) datas[i] = 0x80;
       else if(datas[i]==0x80) datas[i] = 0x81;
-    } 
+    }
+    
     client.write(datas);
+
   }
   
   /*
