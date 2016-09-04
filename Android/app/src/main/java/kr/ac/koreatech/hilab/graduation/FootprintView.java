@@ -61,6 +61,7 @@ public class FootprintView extends View {
     double[] sine = new double[360];
     double[] cosine = new double[360];
     int[] root = new int[160000];
+    int[] gradient = new int[51];
 
     public FootprintView(Context context){
         super(context);
@@ -77,6 +78,13 @@ public class FootprintView extends View {
         for(int i=0; i<160000; i++) {
             root[i] = (int)Math.sqrt(i);
         }
+        for(int i=0; i<50; i++) {
+            gradient[i] = getGradient((double)i/50);
+        }
+        gradient[50] = 0xFF0000;
+
+
+
 
         Log.d("ttt", "Con2");
 
@@ -200,8 +208,8 @@ public class FootprintView extends View {
                         dlx = px - FootProtocol.SENSOR_RLX;
                         dly = py - FootProtocol.SENSOR_RLY;
                     }
-                    float colorU = (float)u-(float)root[dux*dux+duy*duy]/500;
-                    float colorL = (float)l-(float)root[dlx*dlx+dly*dly]/500;
+                    float colorU = u-(float)root[dux*dux+duy*duy]/500;
+                    float colorL = l-(float)root[dlx*dlx+dly*dly]/500;
 
                     if(colorU<0) colorU = 0;
                     if(colorL<0) colorL = 0;
@@ -210,11 +218,11 @@ public class FootprintView extends View {
                     if(color>1) color = 1;
 
                     //int a = (int)(COLOR_L_A*(1-color) + COLOR_H_A*color);
-                    int r = (int)(COLOR_L_R*(1-color) + COLOR_H_R*color) & 0xF0;
-                    int g = (int)(COLOR_L_G*(1-color) + COLOR_H_G*color) & 0xF0;
-                    int b = (int)(COLOR_L_B*(1-color) + COLOR_H_B*color) & 0xF0;
+                    //int r = (int)(COLOR_L_R*(1-color) + COLOR_H_R*color) & 0xF0;
+                    //int g = (int)(COLOR_L_G*(1-color) + COLOR_H_G*color) & 0xF0;
+                    //int b = (int)(COLOR_L_B*(1-color) + COLOR_H_B*color) & 0xF0;
 
-                    dest[i*width+j] = src[py*width+px] | r<<16 | g<<8 | b;
+                    dest[i*width+j] = src[py*width+px] | gradient[(int)(color*50)];
                 }
             }
         }
@@ -256,6 +264,35 @@ public class FootprintView extends View {
     public void setImageView(ImageView iv) {
         imgView = iv;
     }
+
+
+    private int getGradient(double num)
+    {
+        double r=0, g=0, b=0;
+
+        if (num >= 0.0 && num < 0.30) {
+            r = 0;
+            g = num * 853;
+            b = 255;
+        }
+        else if (num >= 0.30 && num < 0.5) {
+            r = 0;
+            g = 255;
+            b = (0.5-num) * 1279;
+        }
+        else if (num >= 0.5 && num < 0.70) {
+            r = (num-0.5) * 1279;
+            g = 255;
+            b = 0;
+        }
+        else if (num >= 0.70 && num <= 1.0) {
+            r = 255;
+            g = (1-num)*853;
+            b = 0;
+        }
+        return (int)r<<16 | (int)g<<8 | (int)b;
+    }
+
 
     @Override
     protected void onDraw(Canvas canvas) {
