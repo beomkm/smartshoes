@@ -57,14 +57,22 @@ public class GraphActivity extends AppCompatActivity {
         /**
          * Intent로 값을 넘겨 받으면 Text를 설정하세요.
          */
-        leftUp_tv.setText(Integer.toString(50));
-        leftLow_tv.setText(Integer.toString(50));
-        rightUp_tv.setText(Integer.toString(50));
-        rightLow_tv.setText(Integer.toString(50));
-        up.setText(Integer.toString(50));
-        low.setText(Integer.toString(50));
-        left.setText(Integer.toString(50));
-        right.setText(Integer.toString(50));
+        DataManager dm = DataManager.getInstance();
+
+        int sumAll = dm.pressSumLL + dm.pressSumLU + dm.pressSumRL + dm.pressSumRU;
+        int sumHoriU = dm.pressSumLU + dm.pressSumRU; //upper
+        int sumHoriL = dm.pressSumLL + dm.pressSumRL; //lower
+        int sumVertL = dm.pressSumLU + dm.pressSumLL; //left
+        int sumVertR = dm.pressSumRU + dm.pressSumRL; //tight
+
+        leftUp_tv.setText((int)((double)dm.pressSumLU/sumAll*100)+"%");
+        leftLow_tv.setText((int)((double)dm.pressSumLL/sumAll*100)+"%");
+        rightUp_tv.setText((int)((double)dm.pressSumRU/sumAll*100)+"%");
+        rightLow_tv.setText((int)((double)dm.pressSumRL/sumAll*100)+"%");
+        up.setText((int)((double)sumHoriU/sumAll*100)+"%");
+        low.setText((int)((double)sumHoriL/sumAll*100)+"%");
+        left.setText((int)((double)sumVertL/sumAll*100)+"%");
+        right.setText((int)((double)sumVertR/sumAll*100)+"%");
 
         // 그래프 그림
         setCircleGraph();

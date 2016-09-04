@@ -247,8 +247,6 @@ class ClientThread extends Thread {
 
         if(!Thread.currentThread().isInterrupted()) {
 
-
-
             Log.d("ttt", "accepted");
 
             DataInputStream is = null;
@@ -301,16 +299,21 @@ class ClientThread extends Thread {
                             }
                             dm.pressR1 = data[3];
                             dm.pressR2 = data[4];
+                            dm.pressSumRU += dm.pressR1;
+                            dm.pressSumRL += dm.pressR2;
+
 
                             for (int i = 0; i < FootProtocol.ARCHIVE_TIME-1; i++) {
                                 dm.pressArrR[i] = dm.pressArrR[i + 1];
                             }
                             dm.pressArrR[FootProtocol.ARCHIVE_TIME-1] = (dm.pressR1 + dm.pressR2) / 2;
 
-                            if (dm.pressR1 + dm.pressR2 > -1 || !inited) {
+                            if (dm.pressR1 + dm.pressR2 > 1 || !inited) {
                                 dm.ahrsR.mmxFix = dm.ahrsR.mmx;
                                 dm.ahrsR.mmyFix = dm.ahrsR.mmy;
                                 dm.ahrsR.mmzFix = dm.ahrsR.mmz;
+                                dm.pressR1Fix = dm.pressR1;
+                                dm.pressR2Fix = dm.pressR2;
                                 inited = true;
                             }
                             count = 0;
@@ -324,6 +327,9 @@ class ClientThread extends Thread {
                             }
                             dm.pressL1 = data[3];
                             dm.pressL2 = data[4];
+                            dm.pressSumLU += dm.pressL1;
+                            dm.pressSumLL += dm.pressL2;
+
 
                             for (int i = 0; i < FootProtocol.ARCHIVE_TIME-1; i++) {
                                 dm.pressArrL[i] = dm.pressArrL[i + 1];
@@ -331,10 +337,12 @@ class ClientThread extends Thread {
                             dm.pressArrL[FootProtocol.ARCHIVE_TIME-1] = (dm.pressL1 + dm.pressL2) / 2;
 
 
-                            if (dm.pressL1 + dm.pressL2 > -1 || !inited) {
+                            if (dm.pressL1 + dm.pressL2 > 1 || !inited) {
                                 dm.ahrsL.mmxFix = dm.ahrsL.mmx;
                                 dm.ahrsL.mmyFix = dm.ahrsL.mmy;
                                 dm.ahrsL.mmzFix = dm.ahrsL.mmz;
+                                dm.pressL1Fix = dm.pressL1;
+                                dm.pressL2Fix = dm.pressL2;
                                 inited = true;
                             }
                             count = 0;
@@ -406,11 +414,11 @@ class DisplayThread extends Thread {
                     //int at = 0;
                     //int at = 180+(int)(180.0f/Math.PI*Math.atan2(by, bx));
 
-                    int atl = (int)dm.ahrsL.tb + (int)(180.0f/Math.PI*Math.atan2(bzl, -bxl));
-                    bv.rotateAndPaint(FootProtocol.FOOT_LEFT, atl, (float)dm.pressL1/200.0f, (float)dm.pressL2/150.0f);
+                    int atl = (int)dm.ahrsL.tb + (int)(180.0f/Math.PI*Math.atan2(bzl, -bxl)); //200f 150f
+                    bv.rotateAndPaint(FootProtocol.FOOT_LEFT, atl, (float)dm.pressL1Fix/120.0f, (float)dm.pressL2Fix/120.0f);
 
                     int atr = (int)dm.ahrsR.tb + (int)(180.0f/Math.PI*Math.atan2(bzr, -bxr));
-                    bv.rotateAndPaint(FootProtocol.FOOT_RIGHT, atr, (float)dm.pressR1/200.0f, (float)dm.pressR2/150.0f);
+                    bv.rotateAndPaint(FootProtocol.FOOT_RIGHT, atr, (float)dm.pressR1Fix/120.0f, (float)dm.pressR2Fix/120.0f);
 
                     //bv.setPaint(FootProtocol.FOOT_RIGHT,(float)dm.pressR1/300.0f, (float)dm.pressR2/200.0f);
                     //foot image
@@ -423,11 +431,10 @@ class DisplayThread extends Thread {
                         vg.invalidate();
                         linearGraphCount = dm.linearGraphCount;
                     }
-
                 }
             });
             try {
-                this.sleep(200);
+                this.sleep(250);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

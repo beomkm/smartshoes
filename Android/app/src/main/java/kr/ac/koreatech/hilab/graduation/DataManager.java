@@ -19,9 +19,22 @@ public class DataManager {
     public int pressL2;
     public int pressR1;
     public int pressR2;
+    public int pressL1Fix;
+    public int pressL2Fix;
+    public int pressR1Fix;
+    public int pressR2Fix;
 
-    public int[] pressArrR;
     public int[] pressArrL;
+    public int[] pressArrR;
+    public int[] angleArrL;
+    public int[] angleArrR;
+
+    public int pressSumLU;
+    public int pressSumLL; //left lower
+    public int pressSumRU;
+    public int pressSumRL; //right lower
+
+
 
     public boolean isConnectedLeft;
     public boolean isConnectedRight;
@@ -37,8 +50,16 @@ public class DataManager {
         pressL2 = 0;
         pressR1 = 0;
         pressR2 = 0;
-        pressArrR = new int[FootProtocol.ARCHIVE_TIME];
         pressArrL = new int[FootProtocol.ARCHIVE_TIME];
+        pressArrR = new int[FootProtocol.ARCHIVE_TIME];
+        angleArrL = new int[FootProtocol.ANGLE_ARCHIVE_TIME];
+        angleArrR = new int[FootProtocol.ANGLE_ARCHIVE_TIME];
+
+        pressSumLU = 0;
+        pressSumLL = 0;
+        pressSumRU = 0;
+        pressSumRL = 0;
+
         linearGraphCount = 0;
 
     }
