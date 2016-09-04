@@ -273,7 +273,7 @@ class ClientThread extends Thread {
             else if(dir == FootProtocol.FOOT_RIGHT) {
                 dm.isConnectedRight = true;
             }
-            if(dm.isConnectedLeft=true && dm.isConnectedRight) {
+            if(dm.isConnectedLeft && (dm.isConnectedRight=true)) {
                 loadingDlg.dismiss();
             }
 
@@ -292,7 +292,6 @@ class ClientThread extends Thread {
                         if(dir == FootProtocol.FOOT_RIGHT) {
                             dm.ahrsR.calcQuaternion(data);
                             if (!dm.ahrsR.tbFlag) {
-                                Log.d("ttt","@@@\n@@@@\n@@@@\n@@@@\n@@@@@@@@@@@@");
                                 dm.ahrsR.tb = -(float) (180.0f / Math.PI * Math.atan2(dm.ahrsR.mmz, -dm.ahrsR.mmx));
                                 dm.ahrsR.tbFlag = true;
 
@@ -390,15 +389,23 @@ class DisplayThread extends Thread {
 
                     //double bz = 180.0f;
                     //double bx = dm.ahrs.mmx/Math.cos(20.0f/180.0f*Math.PI)-bz*Math.tan(20.0f/180.0f*Math.PI);
-                    double bx = dm.ahrsR.mmx;
-                    double by = dm.ahrsR.mmy;
-                    double bz = dm.ahrsR.mmz;
+                    double bxl = dm.ahrsL.mmx;
+                    //double by = dm.ahrsR.mmy;
+                    double bzl = dm.ahrsL.mmz;
+
+                    double bxr = dm.ahrsR.mmx;
+                    //double by = dm.ahrsR.mmy;
+                    double bzr = dm.ahrsR.mmz;
 
                     //int at = 0;
                     //int at = 180+(int)(180.0f/Math.PI*Math.atan2(by, bx));
 
-                    int at = (int)dm.ahrsR.tb + (int)(180.0f/Math.PI*Math.atan2(bz, -bx));
-                    bv.rotateAndPaint(2, at, (float)dm.pressR1/300.0f, (float)dm.pressR2/200.0f);
+                    int atl = (int)dm.ahrsL.tb + (int)(180.0f/Math.PI*Math.atan2(bzl, -bxl));
+                    bv.rotateAndPaint(FootProtocol.FOOT_LEFT, atl, (float)dm.pressL1/200.0f, (float)dm.pressL2/150.0f);
+
+                    int atr = (int)dm.ahrsR.tb + (int)(180.0f/Math.PI*Math.atan2(bzr, -bxr));
+                    //bv.rotateAndPaint(FootProtocol.FOOT_RIGHT, atr, (float)dm.pressR1/300.0f, (float)dm.pressR2/200.0f);
+
                     //bv.setPaint(FootProtocol.FOOT_RIGHT,(float)dm.pressR1/300.0f, (float)dm.pressR2/200.0f);
                     bv.invalidate();
                     iv.invalidate();
