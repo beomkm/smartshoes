@@ -18,4 +18,6 @@ public class FootProtocol {
     public static final int SENSOR_RLX = 185;
     public static final int SENSOR_RLY = 329;
 
+    public static final int ARCHIVE_TIME = 300;
+
 }

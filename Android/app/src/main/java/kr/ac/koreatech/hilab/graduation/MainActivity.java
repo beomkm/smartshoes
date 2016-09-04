@@ -302,10 +302,10 @@ class ClientThread extends Thread {
                             dm.pressR1 = data[3];
                             dm.pressR2 = data[4];
 
-                            for (int i = 0; i < 599; i++) {
+                            for (int i = 0; i < FootProtocol.ARCHIVE_TIME-1; i++) {
                                 dm.pressArrR[i] = dm.pressArrR[i + 1];
                             }
-                            dm.pressArrR[599] = (dm.pressR1 + dm.pressR2) / 2;
+                            dm.pressArrR[FootProtocol.ARCHIVE_TIME-1] = (dm.pressR1 + dm.pressR2) / 2;
 
                             if (dm.pressR1 + dm.pressR2 > -1 || !inited) {
                                 dm.ahrsR.mmxFix = dm.ahrsR.mmx;
@@ -316,19 +316,19 @@ class ClientThread extends Thread {
                             count = 0;
                         }
                         else if(dir == FootProtocol.FOOT_LEFT) {
+                            ++dm.linearGraphCount;
                             dm.ahrsL.calcQuaternion(data);
                             if (!dm.ahrsL.tbFlag) {
                                 dm.ahrsL.tb = -(float) (180.0f / Math.PI * Math.atan2(dm.ahrsL.mmz, -dm.ahrsL.mmx));
                                 dm.ahrsL.tbFlag = true;
-
                             }
                             dm.pressL1 = data[3];
                             dm.pressL2 = data[4];
 
-                            for (int i = 0; i < 599; i++) {
+                            for (int i = 0; i < FootProtocol.ARCHIVE_TIME-1; i++) {
                                 dm.pressArrL[i] = dm.pressArrL[i + 1];
                             }
-                            dm.pressArrL[599] = (dm.pressL1 + dm.pressL2) / 2;
+                            dm.pressArrL[FootProtocol.ARCHIVE_TIME-1] = (dm.pressL1 + dm.pressL2) / 2;
 
 
                             if (dm.pressL1 + dm.pressL2 > -1 || !inited) {
@@ -361,6 +361,8 @@ class DisplayThread extends Thread {
     private int angle;
     private float power;
 
+    private int linearGraphCount;
+
     public DisplayThread(FootprintView bv, ImageView iv, LinearGraphView lgv, ViewGroup vg) {
         angle = 0;
         power = 0f;
@@ -368,6 +370,7 @@ class DisplayThread extends Thread {
         this.iv = iv;
         this.lgv = lgv;
         this.vg = vg;
+        linearGraphCount = 0;
     }
 
     @Override
@@ -410,10 +413,16 @@ class DisplayThread extends Thread {
                     bv.rotateAndPaint(FootProtocol.FOOT_RIGHT, atr, (float)dm.pressR1/200.0f, (float)dm.pressR2/150.0f);
 
                     //bv.setPaint(FootProtocol.FOOT_RIGHT,(float)dm.pressR1/300.0f, (float)dm.pressR2/200.0f);
+                    //foot image
                     bv.invalidate();
                     iv.invalidate();
-                    lgv.invalidate();
-                    vg.invalidate();
+
+                    //linear graph
+                    if(linearGraphCount < dm.linearGraphCount) {
+                        lgv.invalidate();
+                        vg.invalidate();
+                        linearGraphCount = dm.linearGraphCount;
+                    }
 
                 }
             });

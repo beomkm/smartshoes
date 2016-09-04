@@ -10,6 +10,8 @@ public class DataManager {
 
     private static DataManager instance;
 
+
+
     public AHRS ahrsL;
     public AHRS ahrsR;
 
@@ -24,6 +26,8 @@ public class DataManager {
     public boolean isConnectedLeft;
     public boolean isConnectedRight;
 
+    public int linearGraphCount;
+
     private DataManager() {}
 
     private void init() {
@@ -33,8 +37,9 @@ public class DataManager {
         pressL2 = 0;
         pressR1 = 0;
         pressR2 = 0;
-        pressArrR = new int[600];
-        pressArrL = new int[600];
+        pressArrR = new int[FootProtocol.ARCHIVE_TIME];
+        pressArrL = new int[FootProtocol.ARCHIVE_TIME];
+        linearGraphCount = 0;
 
     }
 
