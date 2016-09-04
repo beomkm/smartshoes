@@ -202,9 +202,9 @@ public class FootprintView extends View {
                     if(color>1) color = 1;
 
                     //int a = (int)(COLOR_L_A*(1-color) + COLOR_H_A*color);
-                    int r = (int)(COLOR_L_R*(1-color) + COLOR_H_R*color);
-                    int g = (int)(COLOR_L_G*(1-color) + COLOR_H_G*color);
-                    int b = (int)(COLOR_L_B*(1-color) + COLOR_H_B*color);
+                    int r = (int)(COLOR_L_R*(1-color) + COLOR_H_R*color) & 0xF8;
+                    int g = (int)(COLOR_L_G*(1-color) + COLOR_H_G*color) & 0xF8;
+                    int b = (int)(COLOR_L_B*(1-color) + COLOR_H_B*color) & 0xF8;
 
                     dest[i*width+j] = src[py*width+px] | r<<16 | g<<8 | b;
                 }

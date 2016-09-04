@@ -315,7 +315,7 @@ class ClientThread extends Thread {
                         else if(dir == FootProtocol.FOOT_LEFT) {
                             dm.ahrsL.calcQuaternion(data);
                             if (!dm.ahrsL.tbFlag) {
-                                dm.ahrsL.tb = -(float) (180.0f / Math.PI * Math.atan2(dm.ahrsL.mmz, dm.ahrsL.mmx));
+                                dm.ahrsL.tb = -(float) (180.0f / Math.PI * Math.atan2(dm.ahrsL.mmz, -dm.ahrsL.mmx));
                                 dm.ahrsL.tbFlag = true;
 
                             }
