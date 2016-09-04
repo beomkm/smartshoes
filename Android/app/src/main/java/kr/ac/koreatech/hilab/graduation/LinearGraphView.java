@@ -75,6 +75,9 @@ public class LinearGraphView extends View {
             for(int i=0; i<rightData.length-1; i++) {
                 canvas.drawLine(i+30, 210-rightData[i], i+31, 210-rightData[i+1], rightPaint);
             }
+            for(int i=0; i<rightData.length-1; i++) {
+                canvas.drawLine(i+30, 210-leftData[i], i+31, 210-leftData[i+1], leftPaint);
+            }
         }
 
 

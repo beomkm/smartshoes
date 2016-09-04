@@ -197,11 +197,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.stopBtn :
                 try{
-                    if(dm.isConnectedLeft=true && dm.isConnectedRight) {
+                    if(dm.isConnectedLeft && dm.isConnectedRight) {
                         serversocket.close();
                         Log.d("ttt", "server close");
-                        socket.close();
+                        for(Socket s : sockList) {
+                            s.close();
+                        }
                         Log.d("ttt", "socket close");
+
                         mThread.interrupt();
                         for(ClientThread th : thList) {
                             th.interrupt();
@@ -273,7 +276,7 @@ class ClientThread extends Thread {
             else if(dir == FootProtocol.FOOT_RIGHT) {
                 dm.isConnectedRight = true;
             }
-            if(dm.isConnectedLeft && (dm.isConnectedRight=true)) {
+            if(dm.isConnectedLeft && dm.isConnectedRight) {
                 loadingDlg.dismiss();
             }
 
@@ -404,7 +407,7 @@ class DisplayThread extends Thread {
                     bv.rotateAndPaint(FootProtocol.FOOT_LEFT, atl, (float)dm.pressL1/200.0f, (float)dm.pressL2/150.0f);
 
                     int atr = (int)dm.ahrsR.tb + (int)(180.0f/Math.PI*Math.atan2(bzr, -bxr));
-                    //bv.rotateAndPaint(FootProtocol.FOOT_RIGHT, atr, (float)dm.pressR1/300.0f, (float)dm.pressR2/200.0f);
+                    bv.rotateAndPaint(FootProtocol.FOOT_RIGHT, atr, (float)dm.pressR1/200.0f, (float)dm.pressR2/150.0f);
 
                     //bv.setPaint(FootProtocol.FOOT_RIGHT,(float)dm.pressR1/300.0f, (float)dm.pressR2/200.0f);
                     bv.invalidate();

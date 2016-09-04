@@ -17,11 +17,19 @@ import android.widget.ImageView;
  */
 public class FootprintView extends View {
     private final int COLOR_L = 0xFF0000FF;
+    private final int COLOR_M = 0xFF0000FF;
     private final int COLOR_H = 0xFFFF0000;
+
     private final int COLOR_L_A = COLOR_L>>24&0xFF;
     private final int COLOR_L_R = COLOR_L>>16&0xFF;
     private final int COLOR_L_G = COLOR_L>>8&0xFF;
     private final int COLOR_L_B = COLOR_L&0xFF;
+
+    private final int COLOR_M_A = COLOR_H>>24&0xFF;
+    private final int COLOR_M_R = COLOR_H>>16&0xFF;
+    private final int COLOR_M_G = COLOR_H>>8&0xFF;
+    private final int COLOR_M_B = COLOR_H&0xFF;
+
     private final int COLOR_H_A = COLOR_H>>24&0xFF;
     private final int COLOR_H_R = COLOR_H>>16&0xFF;
     private final int COLOR_H_G = COLOR_H>>8&0xFF;
@@ -202,9 +210,9 @@ public class FootprintView extends View {
                     if(color>1) color = 1;
 
                     //int a = (int)(COLOR_L_A*(1-color) + COLOR_H_A*color);
-                    int r = (int)(COLOR_L_R*(1-color) + COLOR_H_R*color) & 0xF8;
-                    int g = (int)(COLOR_L_G*(1-color) + COLOR_H_G*color) & 0xF8;
-                    int b = (int)(COLOR_L_B*(1-color) + COLOR_H_B*color) & 0xF8;
+                    int r = (int)(COLOR_L_R*(1-color) + COLOR_H_R*color) & 0xF0;
+                    int g = (int)(COLOR_L_G*(1-color) + COLOR_H_G*color) & 0xF0;
+                    int b = (int)(COLOR_L_B*(1-color) + COLOR_H_B*color) & 0xF0;
 
                     dest[i*width+j] = src[py*width+px] | r<<16 | g<<8 | b;
                 }
