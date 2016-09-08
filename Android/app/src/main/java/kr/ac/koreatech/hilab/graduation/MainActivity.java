@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -36,38 +38,24 @@ public class MainActivity extends Activity implements View.OnClickListener{
     static final int NUM_DATA = 5;
 
     private ServerSocket serversocket;
-    private Socket socket;
     private ArrayList<Socket> sockList;
-    private DataInputStream is;
 
-
-    private TextView text_msg;
     private Thread mThread;
     private ArrayList<ClientThread> thList;
-
-    boolean isConnectedLeft = false;
-    boolean isConnectedRight = false;
-    private String msg = "";
 
     private ImageView img;
     private ViewGroup vg;
     private FootprintView fv;
     private LinearGraphView lgv;
 
-
-
-
     private EditText x;
     private EditText z;
     private EditText b;
 
-    private boolean inited = false;
-
     public Button changeBtn;
 
-    int angle = 0;
-    int power = 0;
-    int a = 0;
+    public int cht;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +86,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
         sockList = new ArrayList<Socket>();
         thList = new ArrayList<ClientThread>();
 
+        cht = 0;
 
         //img.setImageBitmap();
         //text_msg= (TextView)findViewById(R.id.massage);
@@ -225,6 +214,48 @@ public class MainActivity extends Activity implements View.OnClickListener{
                 finish();
         }
     }
+
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        super.onTouchEvent(event);
+
+        DataManager dm = DataManager.getInstance();
+
+        if(event.getAction() == MotionEvent.ACTION_DOWN) {
+
+            float x = event.getX();
+            float y = event.getY();
+
+            if(x>600 && y<100) {
+                if((cht&1)==0)
+                    ++cht;
+            }
+            else if(x>600 && y<200) {
+                if((cht&1)==1)
+                    ++cht;
+            }
+
+            if(cht==4) {
+                Toast.makeText(MainActivity.this, "touch", Toast.LENGTH_SHORT).show();
+                double bxl = dm.ahrsL.mmx;
+                double bzl = dm.ahrsL.mmz;
+                double bxr = dm.ahrsR.mmx;
+                double bzr = dm.ahrsR.mmz;
+                dm.ahrsL.tb = -(int)(180.0f/Math.PI*Math.atan2(bzl, -bxl));
+                dm.ahrsR.tb = -(int)(180.0f/Math.PI*Math.atan2(bzr, -bxr));
+
+
+                cht = 0;
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+
 }
 
 

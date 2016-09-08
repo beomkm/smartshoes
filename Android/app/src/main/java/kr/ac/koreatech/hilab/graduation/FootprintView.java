@@ -323,4 +323,7 @@ public class FootprintView extends View {
         //Log.d("ttt", "oD2");
         super.onDraw(canvas);
     }
+
+
+
 }
