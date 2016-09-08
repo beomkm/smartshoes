@@ -22,6 +22,8 @@ public class LinearGraphView extends View {
     private Paint adjPaint;
     private Paint leftPaint;
     private Paint rightPaint;
+    private Paint textPaint;
+
     private int[] leftData;
     private int[] rightData;
 
@@ -79,6 +81,8 @@ public class LinearGraphView extends View {
                 canvas.drawLine(i*4+30, 210-leftData[i], i*4+34, 210-leftData[i+1], leftPaint);
             }
         }
+
+        //canvas.drawText();
 
 
         super.onDraw(canvas);

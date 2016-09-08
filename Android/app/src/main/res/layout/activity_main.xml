@@ -29,17 +29,37 @@
         android:layout_alignParentStart="true"
         android:layout_marginTop="22dp" />
 
+    <ImageView
+        android:layout_width="250dp"
+        android:layout_height="23dp"
+        android:id="@+id/spectrum"
+        android:background="@drawable/spectrum"
+        android:layout_gravity="center"
+        android:layout_below="@+id/img"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="220dp"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
 
         android:id="@+id/linearGraph"
-        android:layout_below="@+id/img"
+        android:layout_below="@+id/spectrum"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginTop="50dp" />
 
+    <ImageView
+        android:layout_width="110dp"
+        android:layout_height="58dp"
+        android:id="@+id/legend"
+        android:background="@drawable/legend"
+        android:layout_gravity="right"
+        android:layout_below="@+id/linearGraph"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="-80dp" />
 
     <EditText
         android:layout_width="wrap_content"

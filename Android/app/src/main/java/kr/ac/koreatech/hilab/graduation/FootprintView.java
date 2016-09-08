@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
@@ -52,6 +53,7 @@ public class FootprintView extends View {
     private Paint rlPaint;
     private Paint luPaint;
     private Paint llPaint;
+    private Paint linePaint;
 
 
     private int mWidth = 0;
@@ -92,6 +94,12 @@ public class FootprintView extends View {
         rlPaint = new Paint();
         luPaint = new Paint();
         llPaint = new Paint();
+        linePaint = new Paint();
+
+        linePaint.setStrokeWidth(5);
+        linePaint.setColor(0xFFDD22DD);
+        linePaint.setStyle(Paint.Style.STROKE);
+        linePaint.setPathEffect(new DashPathEffect(new float[]{8, 8}, 0));
 
         ruBitmapOrg = BitmapFactory.decodeResource(getResources(), R.drawable.foot_ru);
         rlBitmapOrg = BitmapFactory.decodeResource(getResources(), R.drawable.foot_rl);
@@ -188,41 +196,39 @@ public class FootprintView extends View {
         deg %= 360;
         if(deg<0) deg += 360;
         for(int i=0; i<height; i++) { //y
-            for(int j=0; j<width; j++) { //x
-                px = (int)((j-cx)*cosine[deg] - (i-cy)*sine[deg] + cx);
-                py = (int)((j-cx)*sine[deg] + (i-cy)*cosine[deg] + cy);
-                if(px<0 || px>width-1 || py<0 || py>height-1) {
-                    dest[i*width+j] = 0x00000000; //transparent
-                }
-                else {
+            for (int j = 0; j < width; j++) { //x
+                px = (int) ((j - cx) * cosine[deg] - (i - cy) * sine[deg] + cx);
+                py = (int) ((j - cx) * sine[deg] + (i - cy) * cosine[deg] + cy);
+                if (px < 0 || px > width - 1 || py < 0 || py > height - 1) {
+                    dest[i * width + j] = 0x00000000; //transparent
+                } else {
                     int dux, duy, dlx, dly; //delta upper/lower x/y
-                    if(dir == FootProtocol.FOOT_LEFT) {
+                    if (dir == FootProtocol.FOOT_LEFT) {
                         dux = px - FootProtocol.SENSOR_LUX;
                         duy = py - FootProtocol.SENSOR_LUY;
                         dlx = px - FootProtocol.SENSOR_LLX;
                         dly = py - FootProtocol.SENSOR_LLY;
-                    }
-                    else {  //FootProtocol.FOOT_RIGHT
+                    } else {  //FootProtocol.FOOT_RIGHT
                         dux = px - FootProtocol.SENSOR_RUX;
                         duy = py - FootProtocol.SENSOR_RUY;
                         dlx = px - FootProtocol.SENSOR_RLX;
                         dly = py - FootProtocol.SENSOR_RLY;
                     }
-                    float colorU = u-(float)root[dux*dux+duy*duy]/500;
-                    float colorL = l-(float)root[dlx*dlx+dly*dly]/500;
+                    float colorU = u - (float) root[dux * dux + duy * duy] / 500;
+                    float colorL = l - (float) root[dlx * dlx + dly * dly] / 500;
 
-                    if(colorU<0) colorU = 0;
-                    if(colorL<0) colorL = 0;
+                    if (colorU < 0) colorU = 0;
+                    if (colorL < 0) colorL = 0;
 
                     float color = colorU + colorL;
-                    if(color>1) color = 1;
+                    if (color > 1) color = 1;
 
                     //int a = (int)(COLOR_L_A*(1-color) + COLOR_H_A*color);
                     //int r = (int)(COLOR_L_R*(1-color) + COLOR_H_R*color) & 0xF0;
                     //int g = (int)(COLOR_L_G*(1-color) + COLOR_H_G*color) & 0xF0;
                     //int b = (int)(COLOR_L_B*(1-color) + COLOR_H_B*color) & 0xF0;
 
-                    dest[i*width+j] = src[py*width+px] | gradient[(int)(color*50)];
+                    dest[i * width + j] = src[py * width + px] | gradient[(int) (color * 50)];
                 }
             }
         }
@@ -306,6 +312,9 @@ public class FootprintView extends View {
         can.drawBitmap(rlBitmap, 400, 0, rlPaint);
         can.drawBitmap(luBitmap, 0, 0, luPaint);
         can.drawBitmap(llBitmap, 0, 0, llPaint);
+
+        can.drawLine(200, 0, 200, 400, linePaint);
+        can.drawLine(600, 0, 600, 400, linePaint);
 
         //MainActivity.img.setImageBitmap(uBitmap);
 

@@ -1,5 +1,6 @@
 package kr.ac.koreatech.hilab.graduation;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
@@ -23,7 +24,7 @@ import com.handstudio.android.hzgrapherlib.vo.circlegraph.CircleGraphVO;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GraphActivity extends AppCompatActivity {
+public class GraphActivity extends Activity {
 
     private ViewGroup layoutGraphView;
 
@@ -31,8 +32,7 @@ public class GraphActivity extends AppCompatActivity {
     private TextView leftLow_tv;
     private TextView rightUp_tv;
     private TextView rightLow_tv;
-    private TextView up;
-    private TextView low;
+
     private TextView left;
     private TextView right;
 
@@ -50,9 +50,7 @@ public class GraphActivity extends AppCompatActivity {
         rightUp_tv = (TextView) findViewById(R.id.rightUp_tv);
         rightLow_tv = (TextView) findViewById(R.id.rightLow_tv);
         left = (TextView) findViewById(R.id.left);
-        right = (TextView) findViewById(R.id.textView4);
-        low = (TextView) findViewById(R.id.textView3);
-        up = (TextView) findViewById(R.id.textView2);
+        right = (TextView) findViewById(R.id.right);
 
         /**
          * Intent로 값을 넘겨 받으면 Text를 설정하세요.
@@ -69,8 +67,6 @@ public class GraphActivity extends AppCompatActivity {
         leftLow_tv.setText((int)((double)dm.pressSumLL/sumAll*100)+"%");
         rightUp_tv.setText((int)((double)dm.pressSumRU/sumAll*100)+"%");
         rightLow_tv.setText((int)((double)dm.pressSumRL/sumAll*100)+"%");
-        up.setText((int)((double)sumHoriU/sumAll*100)+"%");
-        low.setText((int)((double)sumHoriL/sumAll*100)+"%");
         left.setText((int)((double)sumVertL/sumAll*100)+"%");
         right.setText((int)((double)sumVertR/sumAll*100)+"%");
 
@@ -80,6 +76,7 @@ public class GraphActivity extends AppCompatActivity {
     private void setCircleGraph() {
 
         CircleGraphVO vo = makeLineGraphAllSetting();
+
 
         layoutGraphView.addView(new CircleGraphView(this,vo));
     }
@@ -105,8 +102,10 @@ public class GraphActivity extends AppCompatActivity {
 
         List<CircleGraph> arrGraph 	= new ArrayList<CircleGraph>();
 
-        arrGraph.add(new CircleGraph("정상", Color.parseColor("#3366CC"), 1));
-        arrGraph.add(new CircleGraph("비정상", Color.parseColor("#DC3912"), 1));
+        DataManager dm = DataManager.getInstance();
+
+        arrGraph.add(new CircleGraph("정상", Color.parseColor("#3366CC"), dm.normalCnt));
+        arrGraph.add(new CircleGraph("비정상", Color.parseColor("#DC3912"), dm.abnormalCnt));
 
 
         CircleGraphVO vo = new CircleGraphVO(paddingBottom, paddingTop, paddingLeft, paddingRight,marginTop, marginRight,radius, arrGraph);

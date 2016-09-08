@@ -34,6 +34,9 @@ public class DataManager {
     public int pressSumRU;
     public int pressSumRL; //right lower
 
+    public int normalCnt;
+    public int abnormalCnt;
+
 
 
     public boolean isConnectedLeft;
@@ -61,6 +64,9 @@ public class DataManager {
         pressSumRL = 0;
 
         linearGraphCount = 0;
+
+        normalCnt = 1;
+        abnormalCnt = 1;
 
     }
 

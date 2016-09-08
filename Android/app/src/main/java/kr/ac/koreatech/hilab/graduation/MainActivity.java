@@ -1,5 +1,6 @@
 package kr.ac.koreatech.hilab.graduation;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -13,6 +14,7 @@ import android.view.KeyEvent;
 import android.view.View;
 
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,7 +29,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+public class MainActivity extends Activity implements View.OnClickListener{
 
     static final int PORT = 12345;
     //static final int NUM_DATA = 11;
@@ -70,8 +72,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
         setContentView(R.layout.activity_main);
 
 
@@ -387,7 +389,7 @@ class DisplayThread extends Thread {
         lgv.setDataArray(dm.pressArrL, dm.pressArrR);
 
         while(true) {
-
+            if(dm.linearGraphCount == 0) continue;
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
                 public void run() {
@@ -415,10 +417,19 @@ class DisplayThread extends Thread {
                     //int at = 180+(int)(180.0f/Math.PI*Math.atan2(by, bx));
 
                     int atl = (int)dm.ahrsL.tb + (int)(180.0f/Math.PI*Math.atan2(bzl, -bxl)); //200f 150f
+                    if(atl>-20 && atl<20)
+                        ++dm.normalCnt;
+                    else
+                        ++dm.abnormalCnt;
                     bv.rotateAndPaint(FootProtocol.FOOT_LEFT, atl, (float)dm.pressL1Fix/120.0f, (float)dm.pressL2Fix/120.0f);
 
                     int atr = (int)dm.ahrsR.tb + (int)(180.0f/Math.PI*Math.atan2(bzr, -bxr));
+                    if(atr>-20 && atr<20)
+                        ++dm.normalCnt;
+                    else
+                        ++dm.abnormalCnt;
                     bv.rotateAndPaint(FootProtocol.FOOT_RIGHT, atr, (float)dm.pressR1Fix/120.0f, (float)dm.pressR2Fix/120.0f);
+
 
                     //bv.setPaint(FootProtocol.FOOT_RIGHT,(float)dm.pressR1/300.0f, (float)dm.pressR2/200.0f);
                     //foot image
