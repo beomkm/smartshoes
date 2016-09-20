@@ -39,6 +39,16 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="-20dp"
+        android:text="압력 그래프"
+        android:textSize="11pt"
+        android:textStyle="bold"
+        android:id="@+id/textView4" />
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

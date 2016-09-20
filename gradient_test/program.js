@@ -9,21 +9,46 @@ function init()
    ctx = canvas.getContext("2d");
 
    drawBar(ctx, 100, 100);
+   drawMap(ctx);
+}
+
+function drawMap(ctx)
+{
+    var p1x = 150;
+    var p1y = 120;
+    var p2x = 150;
+    var p2y = 300;
+
+    for(var i=50; i<350; i++) {
+        for(var j=50; j<250; j++) {
+            var d1 = (j-p1x)*(j-p1x) + (i-p1y)*(i-p1y);
+            var d2 = (j-p2x)*(j-p2x) + (i-p2y)*(i-p2y);
+            var sRGB = intToColorstr(ToRGB(1));
+            ctx.fillStyle = sRGB;
+            ctx.fillRect(j, i, 1, 1);
+        }
+    }
 }
 
 function drawBar(ctx, cx, cy)
 {
 
     for(var i=0; i<50; i++) {
-        var sRGB = ToRGB(i/50).toString(16);
-        var nRGB = "";
-        for(j=sRGB.length; j<6; j++) {
-            nRGB += "0";
-        }
-        nRGB += sRGB;
-        ctx.fillStyle = "#"+nRGB;
+        var sRGB = intToColorstr(ToRGB(i/50));
+        ctx.fillStyle = sRGB;
         ctx.fillRect(i*4+cx, cy, 4, 40);
     }
+}
+
+function intToColorstr(num)
+{
+    var num16 = num.toString(16);
+    var str = "#";
+    for(j=num16.length; j<6; j++) {
+        str += "0";
+    }
+    str += num16;
+    return str;
 }
 
 function ToRGB(num)

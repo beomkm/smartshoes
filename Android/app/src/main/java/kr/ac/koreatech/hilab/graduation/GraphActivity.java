@@ -57,18 +57,26 @@ public class GraphActivity extends Activity {
          */
         DataManager dm = DataManager.getInstance();
 
+        //////
+        /*
+        dm.pressSumLU = 19;
+        dm.pressSumLL = 26;
+        dm.pressSumRU = 22;
+        dm.pressSumRL = 33;
+        */
+
         int sumAll = dm.pressSumLL + dm.pressSumLU + dm.pressSumRL + dm.pressSumRU;
         int sumHoriU = dm.pressSumLU + dm.pressSumRU; //upper
         int sumHoriL = dm.pressSumLL + dm.pressSumRL; //lower
         int sumVertL = dm.pressSumLU + dm.pressSumLL; //left
         int sumVertR = dm.pressSumRU + dm.pressSumRL; //tight
 
-        leftUp_tv.setText((int)((double)dm.pressSumLU/sumAll*100)+"%");
-        leftLow_tv.setText((int)((double)dm.pressSumLL/sumAll*100)+"%");
-        rightUp_tv.setText((int)((double)dm.pressSumRU/sumAll*100)+"%");
-        rightLow_tv.setText((int)((double)dm.pressSumRL/sumAll*100)+"%");
-        left.setText((int)((double)sumVertL/sumAll*100)+"%");
-        right.setText((int)((double)sumVertR/sumAll*100)+"%");
+        leftUp_tv.setText((int)Math.round((double)dm.pressSumLU/sumAll*100)+"%");
+        leftLow_tv.setText((int)Math.round((double)dm.pressSumLL/sumAll*100)+"%");
+        rightUp_tv.setText((int)Math.round((double)dm.pressSumRU/sumAll*100)+"%");
+        rightLow_tv.setText((int)Math.round((double)dm.pressSumRL/sumAll*100)+"%");
+        left.setText((int)Math.round((double)sumVertL/sumAll*100)+"%");
+        right.setText((int)Math.round((double)sumVertR/sumAll*100)+"%");
 
         // 그래프 그림
         setCircleGraph();
@@ -103,6 +111,11 @@ public class GraphActivity extends Activity {
         List<CircleGraph> arrGraph 	= new ArrayList<CircleGraph>();
 
         DataManager dm = DataManager.getInstance();
+
+
+        //////
+        dm.normalCnt = 1;
+        dm.abnormalCnt = 1;
 
         arrGraph.add(new CircleGraph("정상", Color.parseColor("#3366CC"), dm.normalCnt));
         arrGraph.add(new CircleGraph("비정상", Color.parseColor("#DC3912"), dm.abnormalCnt));
