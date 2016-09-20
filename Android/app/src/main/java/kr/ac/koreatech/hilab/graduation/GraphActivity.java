@@ -114,8 +114,10 @@ public class GraphActivity extends Activity {
 
 
         //////
+        /*
         dm.normalCnt = 1;
         dm.abnormalCnt = 1;
+        */
 
         arrGraph.add(new CircleGraph("정상", Color.parseColor("#3366CC"), dm.normalCnt));
         arrGraph.add(new CircleGraph("비정상", Color.parseColor("#DC3912"), dm.abnormalCnt));

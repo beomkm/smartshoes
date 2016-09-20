@@ -452,14 +452,14 @@ class DisplayThread extends Thread {
                         ++dm.normalCnt;
                     else
                         ++dm.abnormalCnt;
-                    bv.rotateAndPaint(FootProtocol.FOOT_LEFT, atl, (float)dm.pressL1Fix/120.0f, (float)dm.pressL2Fix/120.0f);
+                    bv.rotateAndPaint(FootProtocol.FOOT_LEFT, atl, (float)dm.pressL1Fix/60.0f, (float)dm.pressL2Fix/40.0f);
 
                     int atr = (int)dm.ahrsR.tb + (int)(180.0f/Math.PI*Math.atan2(bzr, -bxr));
                     if(atr>-20 && atr<20)
                         ++dm.normalCnt;
                     else
                         ++dm.abnormalCnt;
-                    bv.rotateAndPaint(FootProtocol.FOOT_RIGHT, atr, (float)dm.pressR1Fix/120.0f, (float)dm.pressR2Fix/120.0f);
+                    bv.rotateAndPaint(FootProtocol.FOOT_RIGHT, atr, (float)dm.pressR1Fix/60.0f, (float)dm.pressR2Fix/40.0f);
 
 
                     /*
