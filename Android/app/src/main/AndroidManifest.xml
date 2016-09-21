@@ -16,7 +16,6 @@
         <activity android:name=".StartActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -26,6 +25,12 @@
         <activity android:name=".MainActivity" />
 
         <activity android:name=".GraphActivity" />
+
+        <service android:name=".NetService" android:enabled="true">
+            <intent-filter>
+                <action android:name="kr.ac.koreatech.hilab.graduation.startService" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

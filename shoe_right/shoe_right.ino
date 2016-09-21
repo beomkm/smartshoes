@@ -34,6 +34,7 @@ char pass[] = "password" ;   // your network password
 
 int status = WL_IDLE_STATUS;
 IPAddress serverIP(192, 168, 43, 1);  // Server
+//IPAddress serverIP(128, 199, 120, 239);  // Server
 
 // Initialize the client library
 WiFiClient client;
@@ -131,6 +132,8 @@ void loop() {
    
     datas[22] = 0;
     */
+    
+    /******
     datas[0] = lowByte(mx);
     datas[1] = highByte(mx);
     datas[2] = lowByte(my);
@@ -152,7 +155,17 @@ void loop() {
     }
     
     client.write(datas);
-
+    ******/
+    
+    client.write(65);
+    client.write(66);
+    client.write(67);
+    client.write(68);
+    client.write(69);
+    client.write(70);
+    client.write(71);
+    client.write(72);
+    Serial.println("aaaaaaaa");
   }
   
   /*

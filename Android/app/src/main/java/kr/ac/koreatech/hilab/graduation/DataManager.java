@@ -10,7 +10,7 @@ public class DataManager {
 
     private static DataManager instance;
 
-
+    public final int DUMMY = 3;
 
     public AHRS ahrsL;
     public AHRS ahrsR;

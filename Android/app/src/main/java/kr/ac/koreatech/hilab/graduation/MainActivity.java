@@ -24,11 +24,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
+import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 
 public class MainActivity extends Activity implements View.OnClickListener{
@@ -51,6 +56,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
     private EditText x;
     private EditText z;
     private EditText b;
+
 
     public Button changeBtn;
 
@@ -129,6 +135,9 @@ public class MainActivity extends Activity implements View.OnClickListener{
         DisplayThread th = new DisplayThread(fv, img, lgv, vg);
         th.start();
 
+
+
+        startService(new Intent(this, NetService.class));
 
 
         mThread = new Thread(new Runnable() {
@@ -255,6 +264,12 @@ public class MainActivity extends Activity implements View.OnClickListener{
         return false;
     }
 
+    @Override
+    public void onDestroy() {
+        // TODO Auto-generated method stub
+        super.onDestroy();
+        stopService(new Intent(this, NetService.class));
+    }
 
 }
 
@@ -271,6 +286,11 @@ class ClientThread extends Thread {
         this.sock = sock;
         this.loadingDlg = loadingDlg;
         inited = false;
+        try {
+            this.sock.setTcpNoDelay(true);
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -283,12 +303,12 @@ class ClientThread extends Thread {
             Log.d("ttt", "accepted");
 
             DataInputStream is = null;
+
             try {
                 is = new DataInputStream(sock.getInputStream());
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
 
             int[] buf = new int[2*FootProtocol.NUM_DATA];
             short[] data = new short[FootProtocol.NUM_DATA];
@@ -313,6 +333,10 @@ class ClientThread extends Thread {
 
             while (isConnected) {
                 try {
+                    if(dir == FootProtocol.FOOT_RIGHT) {
+                        Log.d("ttt", "" + is.available());
+                    }
+                    /*
                     buf[count] = is.readByte();
                     if (buf[count] == -128) buf[count] = 0;
                     ++count;
@@ -341,7 +365,7 @@ class ClientThread extends Thread {
                             }
                             dm.pressArrR[FootProtocol.ARCHIVE_TIME-1] = (dm.pressR1 + dm.pressR2) / 2;
 
-                            if (dm.pressR1 + dm.pressR2 > 1 || !inited) {
+                            if (dm.pressR1 + dm.pressR2 > 10 || !inited) {
                                 dm.ahrsR.mmxFix = dm.ahrsR.mmx;
                                 dm.ahrsR.mmyFix = dm.ahrsR.mmy;
                                 dm.ahrsR.mmzFix = dm.ahrsR.mmz;
@@ -370,7 +394,7 @@ class ClientThread extends Thread {
                             dm.pressArrL[FootProtocol.ARCHIVE_TIME-1] = (dm.pressL1 + dm.pressL2) / 2;
 
 
-                            if (dm.pressL1 + dm.pressL2 > 1 || !inited) {
+                            if (dm.pressL1 + dm.pressL2 > 10 || !inited) {
                                 dm.ahrsL.mmxFix = dm.ahrsL.mmx;
                                 dm.ahrsL.mmyFix = dm.ahrsL.mmy;
                                 dm.ahrsL.mmzFix = dm.ahrsL.mmz;
@@ -381,11 +405,13 @@ class ClientThread extends Thread {
                             count = 0;
                         }
                     }
+                    */
 
                 } catch (IOException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
+
 
             }//end while
         }//end run()
