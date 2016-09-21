@@ -9,7 +9,7 @@ function init()
    ctx = canvas.getContext("2d");
 
    drawBar(ctx, 100, 100);
-   drawMap(ctx);
+   //drawMap(ctx);
 }
 
 function drawMap(ctx)
