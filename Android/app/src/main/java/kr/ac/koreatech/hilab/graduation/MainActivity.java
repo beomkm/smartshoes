@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -46,7 +47,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
     private ArrayList<Socket> sockList;
 
     private Thread mThread;
-    private ArrayList<ClientThread> thList;
+    //private ArrayList<ClientThread> thList;
 
     private ImageView img;
     private ViewGroup vg;
@@ -90,9 +91,9 @@ public class MainActivity extends Activity implements View.OnClickListener{
         b = (EditText)findViewById(R.id.editTextb);
 
         sockList = new ArrayList<Socket>();
-        thList = new ArrayList<ClientThread>();
+        //thList = new ArrayList<ClientThread>();
 
-        cht = 0;
+        cht = 0;  //initialize shoe angle
 
         //img.setImageBitmap();
         //text_msg= (TextView)findViewById(R.id.massage);
@@ -120,6 +121,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
         final Dialog loadingDlg = new Dialog(this, R.style.TransDialog);
         loadingDlg.setContentView(R.layout.layout_dialog);
+
         //ProgressBar pb = new ProgressBar(this);
         //TextView tv = new TextView(this);
         //tv.setText("연결 대기중...");
@@ -139,12 +141,14 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
         startService(new Intent(this, NetService.class));
 
-
+        /**********
         mThread = new Thread(new Runnable() {
             @Override
             public void run() {
+                DataManager dm = DataManager.getInstance();
                 try {
                     serversocket = new ServerSocket(PORT, 5, null);
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -160,6 +164,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
             }
         });
         mThread.start();
+        ***********/
 
     }
     @Override
@@ -196,7 +201,9 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
                 break;
             case R.id.stopBtn :
+                /*************************
                 try{
+
                     if(dm.isConnectedLeft && dm.isConnectedRight) {
                         serversocket.close();
                         Log.d("ttt", "server close");
@@ -209,14 +216,17 @@ public class MainActivity extends Activity implements View.OnClickListener{
                         for(ClientThread th : thList) {
                             th.interrupt();
                         }
+
                         Log.d("ttt", "thread stop");
                         dm.isConnectedLeft = false;
                         dm.isConnectedRight = false;
                     }
+
                 }
                 catch(IOException e){
                     e.printStackTrace();
                 }
+                     *******************************/
 
                 Intent intent = new Intent(MainActivity.this, GraphActivity.class);
                 startActivity(intent);
@@ -254,7 +264,6 @@ public class MainActivity extends Activity implements View.OnClickListener{
                 dm.ahrsL.tb = -(int)(180.0f/Math.PI*Math.atan2(bzl, -bxl));
                 dm.ahrsR.tb = -(int)(180.0f/Math.PI*Math.atan2(bzr, -bxr));
 
-
                 cht = 0;
             }
 
@@ -273,7 +282,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
 }
 
-
+/**************
 class ClientThread extends Thread {
 
     private Socket sock;
@@ -334,9 +343,10 @@ class ClientThread extends Thread {
             while (isConnected) {
                 try {
                     if(dir == FootProtocol.FOOT_RIGHT) {
-                        Log.d("ttt", "" + is.available());
+                        int d = is.available();
+                        //Log.d("ttt", "" + is.available());
                     }
-                    /*
+
                     buf[count] = is.readByte();
                     if (buf[count] == -128) buf[count] = 0;
                     ++count;
@@ -405,7 +415,7 @@ class ClientThread extends Thread {
                             count = 0;
                         }
                     }
-                    */
+
 
                 } catch (IOException e) {
                     // TODO Auto-generated catch block
@@ -417,6 +427,7 @@ class ClientThread extends Thread {
         }//end run()
     }//end run()
 }
+**********************/
 
 
 class DisplayThread extends Thread {
