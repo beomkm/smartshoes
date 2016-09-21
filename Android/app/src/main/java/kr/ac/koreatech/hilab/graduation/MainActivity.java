@@ -137,9 +137,6 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
 
 
-        startService(new Intent(this, NetService.class));
-
-
         mThread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -268,7 +265,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
     public void onDestroy() {
         // TODO Auto-generated method stub
         super.onDestroy();
-        stopService(new Intent(this, NetService.class));
+
     }
 
 }

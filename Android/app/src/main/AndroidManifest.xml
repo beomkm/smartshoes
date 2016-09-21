@@ -26,11 +26,7 @@
 
         <activity android:name=".GraphActivity" />
 
-        <service android:name=".NetService" android:enabled="true">
-            <intent-filter>
-                <action android:name="kr.ac.koreatech.hilab.graduation.startService" />
-            </intent-filter>
-        </service>
+
     </application>
 
 </manifest>
