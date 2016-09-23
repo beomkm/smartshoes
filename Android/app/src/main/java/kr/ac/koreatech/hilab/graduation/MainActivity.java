@@ -132,7 +132,8 @@ public class MainActivity extends Activity implements View.OnClickListener{
         //ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         //loadingDlg.addContentView(pb, lp1);
         //loadingDlg.addContentView(tv, lp2);
-        loadingDlg.show();
+
+        //loadingDlg.show();
 
 
 
@@ -333,6 +334,41 @@ class ClientThread extends Thread {
                     }
                     Log.d("ttt", strdbg);
 
+
+                    for (int i = 0; i < 5; i++) {
+                        data[i] = (short)((buf[i * 2] & 0xFF) | (buf[i * 2 + 1] & 0xFF) << 8);
+                        //msg += data[i] + " ";
+                    }
+
+                    if(port == 12345) {
+                        ++dm.linearGraphCount;
+                        dm.ahrsR.calcQuaternion(data);
+                        if (!dm.ahrsR.tbFlag) {
+                            dm.ahrsR.tb = -(float) (180.0f / Math.PI * Math.atan2(dm.ahrsR.mmz, -dm.ahrsR.mmx));
+                            dm.ahrsR.tbFlag = true;
+
+                        }
+                        dm.pressR1 = data[3];
+                        dm.pressR2 = data[4];
+                        dm.pressSumRU += dm.pressR1;
+                        dm.pressSumRL += dm.pressR2;
+
+
+                        for (int i = 0; i < FootProtocol.ARCHIVE_TIME-1; i++) {
+                            dm.pressArrR[i] = dm.pressArrR[i + 1];
+                        }
+                        dm.pressArrR[FootProtocol.ARCHIVE_TIME-1] = (dm.pressR1 + dm.pressR2) / 2;
+
+                        if (dm.pressR1 + dm.pressR2 > 10 || !inited) {
+                            dm.ahrsR.mmxFix = dm.ahrsR.mmx;
+                            dm.ahrsR.mmyFix = dm.ahrsR.mmy;
+                            dm.ahrsR.mmzFix = dm.ahrsR.mmz;
+                            dm.pressR1Fix = dm.pressR1;
+                            dm.pressR2Fix = dm.pressR2;
+                            inited = true;
+                        }
+                        //count = 0;
+                    }
                     /*
                     buf[count] = is.readByte();
                     if (buf[count] == -128) buf[count] = 0;
@@ -478,6 +514,7 @@ class DisplayThread extends Thread {
                     bv.rotateAndPaint(FootProtocol.FOOT_LEFT, atl, (float)dm.pressL1Fix/60.0f, (float)dm.pressL2Fix/40.0f);
 
                     int atr = (int)dm.ahrsR.tb + (int)(180.0f/Math.PI*Math.atan2(bzr, -bxr));
+                    Log.d("ttt", "atr : " + atr);
                     if(atr>-20 && atr<20)
                         ++dm.normalCnt;
                     else
