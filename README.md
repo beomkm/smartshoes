@@ -1,10 +1,10 @@
 # walking
 
-(¡Øasterisk means  'active project')
+(asterisk means  'active project')
 
 *Android/ : Main project (Android)
 
-Footpriont/ : Graphic test (Android)
+Footprint/ : Graphic test (Android)
 
 graph_imu/ : AHRS algorithm (Processing)
 
