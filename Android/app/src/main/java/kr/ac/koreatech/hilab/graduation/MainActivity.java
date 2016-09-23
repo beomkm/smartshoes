@@ -29,9 +29,13 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
@@ -136,27 +140,12 @@ public class MainActivity extends Activity implements View.OnClickListener{
         th.start();
 
 
-
-        mThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    serversocket = new ServerSocket(PORT, 5, null);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                while(!mThread.isInterrupted()) {
-                    try {
-                        ClientThread cth = new ClientThread(serversocket.accept(), loadingDlg);
-                        thList.add(cth);
-                        cth.start();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
-        mThread.start();
+        ClientThread cth1 = new ClientThread(12344, loadingDlg);
+        ClientThread cth2 = new ClientThread(12345, loadingDlg);
+        thList.add(cth1);
+        thList.add(cth2);
+        cth1.start();
+        cth2.start();
 
     }
     @Override
@@ -272,22 +261,31 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
 
 class ClientThread extends Thread {
-
-    private Socket sock;
     private int dir;
     private Dialog loadingDlg;
     private boolean isConnected;
     private boolean inited;
 
-    public ClientThread(Socket sock, Dialog loadingDlg) {
+    private int port;
+    private DatagramSocket sock;
+    private byte[] buf;
+    private DatagramPacket packet;
+
+    public ClientThread(int port, Dialog loadingDlg) {
         this.sock = sock;
         this.loadingDlg = loadingDlg;
+        this.port = port;
         inited = false;
+
         try {
-            this.sock.setTcpNoDelay(true);
+            sock = new DatagramSocket(this.port);
         } catch (SocketException e) {
             e.printStackTrace();
         }
+
+        buf = new byte[10];
+        packet = new DatagramPacket(buf, buf.length);
+
     }
 
     @Override
@@ -297,20 +295,14 @@ class ClientThread extends Thread {
 
         if(!Thread.currentThread().isInterrupted()) {
 
-            Log.d("ttt", "accepted");
+            Log.d("ttt", "ready : " + port);
 
             DataInputStream is = null;
 
-            try {
-                is = new DataInputStream(sock.getInputStream());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            int[] buf = new int[2*FootProtocol.NUM_DATA];
             short[] data = new short[FootProtocol.NUM_DATA];
             int count = 0;
 
+            /*
             try {
                 dir = is.readByte();
             } catch (IOException e) {
@@ -327,12 +319,20 @@ class ClientThread extends Thread {
             if(dm.isConnectedLeft && dm.isConnectedRight) {
                 loadingDlg.dismiss();
             }
+            */
 
+            isConnected = true;
             while (isConnected) {
                 try {
-                    if(dir == FootProtocol.FOOT_RIGHT) {
-                        Log.d("ttt", "" + is.available());
+                    //Log.d("ttt", "wating");
+                    sock.receive(packet);
+                    //Log.d("ttt", "received");
+                    String strdbg = "";
+                    for(int i=0; i<10; i++) {
+                        strdbg += buf[i] + " ";
                     }
+                    Log.d("ttt", strdbg);
+
                     /*
                     buf[count] = is.readByte();
                     if (buf[count] == -128) buf[count] = 0;

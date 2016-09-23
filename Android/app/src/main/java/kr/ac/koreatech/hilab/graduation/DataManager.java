@@ -1,6 +1,7 @@
 package kr.ac.koreatech.hilab.graduation;
 
 
+import java.net.ServerSocket;
 import java.util.Queue;
 
 /**
@@ -37,7 +38,7 @@ public class DataManager {
     public int normalCnt;
     public int abnormalCnt;
 
-
+    ServerSocket serverSocket;
 
     public boolean isConnectedLeft;
     public boolean isConnectedRight;

@@ -1,5 +1,6 @@
 #include <SPI.h>
 #include <WiFi.h>
+#include <WiFiUdp.h>
 #include <Wire.h>
 #include <I2Cdev.h>
 #include <MPU6050.h>
@@ -26,7 +27,7 @@ float UpRfsr, DownRfsr;
 
 int sendable = 0;
 
-char datas[23];
+char datas[10];
 
 
 char ssid[] = "MySSID" ;          //  your network SSID (name) 
@@ -35,30 +36,11 @@ char pass[] = "password" ;   // your network password
 int status = WL_IDLE_STATUS;
 IPAddress serverIP(192, 168, 43, 1);  // Server
 //IPAddress serverIP(128, 199, 120, 239);  // Server
+int serverPort = 12345;
 
 // Initialize the client library
-WiFiClient client;
+WiFiUDP client;
 
-
-void connectSv() {
-  Serial.println("Connected to wifi.\n");
-  Serial.println("Starting connection...");
-  while(1) {
-    client.flush();
-    client.stop();
-    if (client.connect(serverIP, 12345)) {
-      Serial.println("connected");
-      sendable = 1;
-      client.write(2); //right leg sign is two(2)
-      break;
-    }
-    else {
-      Serial.println("Couldn't connect to the server!");
-      Serial.println("Reconnect after few second.");
-      delay(SV_RECONN_TIME*1000);
-    }
-  }
-}
 
 
 void setup() {
@@ -80,7 +62,8 @@ void setup() {
     else break;
   }
   
-  connectSv();
+  Serial.println("Connected to AP.");
+  sendable = 1;
 }
 
 void loop() {
@@ -89,7 +72,7 @@ void loop() {
   //imu
   
   accelgyro.getMotion9(&ax, &ay, &az, &gx, &gy, &gz, &mx, &my, &mz);
-
+  //accelgyro.getMag(
   
   //pressure
   UpVo = analogRead(UpFSRpin);
@@ -100,7 +83,7 @@ void loop() {
   //sendable = 1;
   if(sendable) {
     //Serial.println(UpVo);
-    //Serial.println(ax);
+    Serial.println(mx);
    
     /*
     datas[0] = lowByte(ax);
@@ -145,15 +128,21 @@ void loop() {
     datas[8] = lowByte((int)DownVo);
     datas[9] = highByte((int)DownVo);
    
-    datas[10] = 0;
+    //datas[10] = 0;
    //Serial.println(ax);
+  
   
     for(i=0; i<10; i++) {
       if(datas[i]==0) datas[i] = 0x80;
       else if(datas[i]==0x80) datas[i] = 0x81;
     }
     
+    
+    client.beginPacket(serverIP, serverPort);
     client.write(datas);
+    //client.write(lowByte((int)Vo));
+    //client.write(highByte((int)Vo));
+    client.endPacket();
  
     
     /**********
@@ -173,14 +162,5 @@ void loop() {
   }
   */
 
-  if (!client.connected()) {
-    Serial.println("\ndisconnected.");
-    client.stop();
-    sendable = 0;
-    
-    delay(500);
-    Serial.println("Trying to reconnect..");
-    connectSv();
-  }
   delay(100);
 }
