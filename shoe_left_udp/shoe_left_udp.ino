@@ -36,7 +36,7 @@ char pass[] = "password" ;   // your network password
 int status = WL_IDLE_STATUS;
 IPAddress serverIP(192, 168, 43, 1);  // Server
 //IPAddress serverIP(128, 199, 120, 239);  // Server
-int serverPort = 12345;
+int serverPort = 12344;
 
 // Initialize the client library
 WiFiUDP client;
@@ -83,7 +83,7 @@ void loop() {
   //sendable = 1;
   if(sendable) {
     //Serial.println(UpVo);
-    //Serial.println((int)DownVo);
+    //Serial.println(mx);
    
     /*
     datas[0] = lowByte(ax);

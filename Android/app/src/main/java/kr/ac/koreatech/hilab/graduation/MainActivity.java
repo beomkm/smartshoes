@@ -328,15 +328,17 @@ class ClientThread extends Thread {
                     //Log.d("ttt", "wating");
                     sock.receive(packet);
                     //Log.d("ttt", "received");
-                    String strdbg = "";
-                    for(int i=0; i<10; i++) {
-                        strdbg += buf[i] + " ";
-                    }
-                    Log.d("ttt", strdbg);
+                    //String strdbg = "";
+                    //for(int i=0; i<10; i++) {
+                        //strdbg += buf[i] + " ";
+                    //}
+                    //Log.d("ttt", strdbg);
 
 
                     for (int i = 0; i < 5; i++) {
-                        data[i] = (short)((buf[i * 2] & 0xFF) | (buf[i * 2 + 1] & 0xFF) << 8);
+                        if (buf[i*2] == -128) buf[i*2] = 0;
+                        if (buf[i*2+1] == -128) buf[i*2+1] = 0;
+                        data[i] = (short)((buf[i*2] & 0xFF) | (buf[i*2+1] & 0xFF) << 8);
                         //msg += data[i] + " ";
                     }
 
@@ -359,7 +361,7 @@ class ClientThread extends Thread {
                         }
                         dm.pressArrR[FootProtocol.ARCHIVE_TIME-1] = (dm.pressR1 + dm.pressR2) / 2;
 
-                        if (dm.pressR1 + dm.pressR2 > 10 || !inited) {
+                        if (1==1 || !inited) {
                             dm.ahrsR.mmxFix = dm.ahrsR.mmx;
                             dm.ahrsR.mmyFix = dm.ahrsR.mmy;
                             dm.ahrsR.mmzFix = dm.ahrsR.mmz;
@@ -368,6 +370,36 @@ class ClientThread extends Thread {
                             inited = true;
                         }
                         //count = 0;
+                    }
+                    else if(port == 12344) {
+                        ++dm.linearGraphCount;
+                        dm.ahrsL.calcQuaternion(data);
+
+                        if (!dm.ahrsL.tbFlag) {
+                            dm.ahrsL.tb = -(float) (180.0f / Math.PI * Math.atan2(dm.ahrsL.mmz, -dm.ahrsL.mmx));
+                            dm.ahrsL.tbFlag = true;
+                        }
+                        dm.pressL1 = data[3];
+                        dm.pressL2 = data[4];
+                        dm.pressSumLU += dm.pressL1;
+                        dm.pressSumLL += dm.pressL2;
+
+
+                        for (int i = 0; i < FootProtocol.ARCHIVE_TIME-1; i++) {
+                            dm.pressArrL[i] = dm.pressArrL[i + 1];
+                        }
+                        dm.pressArrL[FootProtocol.ARCHIVE_TIME-1] = (dm.pressL1 + dm.pressL2) / 2;
+
+
+                        if (1==1 || !inited) {
+                            dm.ahrsL.mmxFix = dm.ahrsL.mmx;
+                            dm.ahrsL.mmyFix = dm.ahrsL.mmy;
+                            dm.ahrsL.mmzFix = dm.ahrsL.mmz;
+                            dm.pressL1Fix = dm.pressL1;
+                            dm.pressL2Fix = dm.pressL2;
+                            inited = true;
+                        }
+                        count = 0;
                     }
                     /*
                     buf[count] = is.readByte();
@@ -503,10 +535,13 @@ class DisplayThread extends Thread {
                     //double by = dm.ahrsR.mmy;
                     double bzr = dm.ahrsR.mmz;
 
+                    //Log.d("ttt", ""+bxr+" "+bzr);
+
                     //int at = 0;
                     //int at = 180+(int)(180.0f/Math.PI*Math.atan2(by, bx));
 
                     int atl = (int)dm.ahrsL.tb + (int)(180.0f/Math.PI*Math.atan2(bzl, -bxl)); //200f 150f
+
                     if(atl>-20 && atl<20)
                         ++dm.normalCnt;
                     else
@@ -514,7 +549,7 @@ class DisplayThread extends Thread {
                     bv.rotateAndPaint(FootProtocol.FOOT_LEFT, atl, (float)dm.pressL1Fix/60.0f, (float)dm.pressL2Fix/40.0f);
 
                     int atr = (int)dm.ahrsR.tb + (int)(180.0f/Math.PI*Math.atan2(bzr, -bxr));
-                    Log.d("ttt", "atr : " + atr);
+                    //Log.d("ttt", "atr : " + atr);
                     if(atr>-20 && atr<20)
                         ++dm.normalCnt;
                     else
@@ -542,7 +577,7 @@ class DisplayThread extends Thread {
                     //bv.setPaint(FootProtocol.FOOT_RIGHT,(float)dm.pressR1/300.0f, (float)dm.pressR2/200.0f);
                     //foot image
                     bv.invalidate();
-                    iv.invalidate();
+                    //iv.invalidate();
 
                     //linear graph
                     if(linearGraphCount < dm.linearGraphCount) {
@@ -553,7 +588,7 @@ class DisplayThread extends Thread {
                 }
             });
             try {
-                this.sleep(250);
+                this.sleep(200);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
