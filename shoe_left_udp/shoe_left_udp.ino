@@ -82,7 +82,7 @@ void loop() {
 
   //sendable = 1;
   if(sendable) {
-    //Serial.println(UpVo);
+    //Serial.println(DownVo);
     //Serial.println(mx);
    
     
@@ -133,7 +133,7 @@ void loop() {
    //Serial.println(ax);
   
   
-    for(i=0; i<10; i++) {
+    for(i=0; i<22; i++) {
       if(datas[i]==0) datas[i] = 0x80;
       else if(datas[i]==0x80) datas[i] = 0x81;
     }

@@ -133,7 +133,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
         //loadingDlg.addContentView(pb, lp1);
         //loadingDlg.addContentView(tv, lp2);
 
-        //loadingDlg.show();
+        loadingDlg.show();
 
 
 
@@ -327,10 +327,11 @@ class ClientThread extends Thread {
                 try {
                     //Log.d("ttt", "wating");
                     sock.receive(packet);
+
                     //Log.d("ttt", "received");
                     //String strdbg = "";
                     //for(int i=0; i<10; i++) {
-                        //strdbg += buf[i] + " ";
+                    //    strdbg += buf[i] + " ";
                     //}
                     //Log.d("ttt", strdbg);
 
@@ -342,7 +343,12 @@ class ClientThread extends Thread {
                         //msg += data[i] + " ";
                     }
 
+                    if(dm.isConnectedRight && dm.isConnectedLeft)
+                        loadingDlg.dismiss();
+
+
                     if(port == 12345) {
+                        dm.isConnectedRight = true;
                         ++dm.linearGraphCount;
                         dm.ahrsR.calcQuaternion(data);
                         if (!dm.ahrsR.tbFlag) {
@@ -372,6 +378,7 @@ class ClientThread extends Thread {
                         //count = 0;
                     }
                     else if(port == 12344) {
+                        dm.isConnectedLeft = true;
                         ++dm.linearGraphCount;
                         dm.ahrsL.calcQuaternion(data);
 
@@ -383,7 +390,6 @@ class ClientThread extends Thread {
                         dm.pressL2 = data[10];
                         dm.pressSumLU += dm.pressL1;
                         dm.pressSumLL += dm.pressL2;
-
 
                         for (int i = 0; i < FootProtocol.ARCHIVE_TIME-1; i++) {
                             dm.pressArrL[i] = dm.pressArrL[i + 1];
