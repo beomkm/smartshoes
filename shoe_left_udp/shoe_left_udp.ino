@@ -27,7 +27,7 @@ float UpRfsr, DownRfsr;
 
 int sendable = 0;
 
-char datas[10];
+char datas[22];
 
 
 char ssid[] = "MySSID" ;          //  your network SSID (name) 
@@ -71,8 +71,8 @@ void loop() {
   
   //imu
   
-  //accelgyro.getMotion9(&ax, &ay, &az, &gx, &gy, &gz, &mx, &my, &mz);
-  accelgyro.getMag(&mx, &my, &mz);
+  accelgyro.getMotion9(&ax, &ay, &az, &gx, &gy, &gz, &mx, &my, &mz);
+  //accelgyro.getMag(&mx, &my, &mz);
   
   //pressure
   UpVo = analogRead(UpFSRpin);
@@ -85,7 +85,7 @@ void loop() {
     //Serial.println(UpVo);
     //Serial.println(mx);
    
-    /*
+    
     datas[0] = lowByte(ax);
     datas[1] = highByte(ax);
     datas[2] = lowByte(ay);
@@ -113,9 +113,10 @@ void loop() {
     datas[20] = lowByte((int)DownVo);
     datas[21] = highByte((int)DownVo);
    
-    datas[22] = 0;
-    */
- 
+   
+    //datas[22] = 0;
+    
+   /*
     datas[0] = lowByte(mx);
     datas[1] = highByte(mx);
     datas[2] = lowByte(my);
@@ -127,7 +128,7 @@ void loop() {
     datas[7] = highByte((int)UpVo);
     datas[8] = lowByte((int)DownVo);
     datas[9] = highByte((int)DownVo);
-   
+   */
     //datas[10] = 0;
    //Serial.println(ax);
   
@@ -162,5 +163,5 @@ void loop() {
   }
   */
 
-  delay(80);
+  delay(90);
 }

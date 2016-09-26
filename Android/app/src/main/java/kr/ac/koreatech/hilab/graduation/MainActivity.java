@@ -284,7 +284,7 @@ class ClientThread extends Thread {
             e.printStackTrace();
         }
 
-        buf = new byte[10];
+        buf = new byte[FootProtocol.NUM_DATA*2];
         packet = new DatagramPacket(buf, buf.length);
 
     }
@@ -335,7 +335,7 @@ class ClientThread extends Thread {
                     //Log.d("ttt", strdbg);
 
 
-                    for (int i = 0; i < 5; i++) {
+                    for (int i = 0; i < FootProtocol.NUM_DATA; i++) {
                         if (buf[i*2] == -128) buf[i*2] = 0;
                         if (buf[i*2+1] == -128) buf[i*2+1] = 0;
                         data[i] = (short)((buf[i*2] & 0xFF) | (buf[i*2+1] & 0xFF) << 8);
@@ -346,12 +346,12 @@ class ClientThread extends Thread {
                         ++dm.linearGraphCount;
                         dm.ahrsR.calcQuaternion(data);
                         if (!dm.ahrsR.tbFlag) {
-                            dm.ahrsR.tb = -(float) (180.0f / Math.PI * Math.atan2(dm.ahrsR.mmz, -dm.ahrsR.mmx));
+                            //dm.ahrsR.tb = -(float) (180.0f / Math.PI * Math.atan2(dm.ahrsR.mmz, -dm.ahrsR.mmx));
+                            dm.ahrsR.tb = -dm.ahrsR.q[1]*180;
                             dm.ahrsR.tbFlag = true;
-
                         }
-                        dm.pressR1 = data[3];
-                        dm.pressR2 = data[4];
+                        dm.pressR1 = data[9];
+                        dm.pressR2 = data[10];
                         dm.pressSumRU += dm.pressR1;
                         dm.pressSumRL += dm.pressR2;
 
@@ -379,8 +379,8 @@ class ClientThread extends Thread {
                             dm.ahrsL.tb = -(float) (180.0f / Math.PI * Math.atan2(dm.ahrsL.mmz, -dm.ahrsL.mmx));
                             dm.ahrsL.tbFlag = true;
                         }
-                        dm.pressL1 = data[3];
-                        dm.pressL2 = data[4];
+                        dm.pressL1 = data[9];
+                        dm.pressL2 = data[10];
                         dm.pressSumLU += dm.pressL1;
                         dm.pressSumLL += dm.pressL2;
 
@@ -541,6 +541,7 @@ class DisplayThread extends Thread {
                     //int at = 180+(int)(180.0f/Math.PI*Math.atan2(by, bx));
 
                     int atl = (int)dm.ahrsL.tb + (int)(180.0f/Math.PI*Math.atan2(bzl, -bxl)); //200f 150f
+                    atl = -(int)dm.ahrsL.roll;
 
                     if(atl>-20 && atl<20)
                         ++dm.normalCnt;
@@ -549,6 +550,9 @@ class DisplayThread extends Thread {
                     bv.rotateAndPaint(FootProtocol.FOOT_LEFT, atl, (float)dm.pressL1Fix/60.0f, (float)dm.pressL2Fix/40.0f);
 
                     int atr = (int)dm.ahrsR.tb + (int)(180.0f/Math.PI*Math.atan2(bzr, -bxr));
+                    //atr = -(int)(dm.ahrsR.q[1]*180);
+                    atr = -(int)dm.ahrsR.roll;
+
                     //Log.d("ttt", "atr : " + atr);
                     if(atr>-20 && atr<20)
                         ++dm.normalCnt;

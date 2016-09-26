@@ -4,6 +4,8 @@ public class AHRS {
 
     public float []q;
     public float yaw;
+    public float pitch;
+    public float roll;
 
     public float mmx;
     public float mmy;
@@ -77,7 +79,7 @@ public class AHRS {
                 _2q0, _2q1, _2q2, _2q3,
                 _2q0q2, _2q2q3, q0q0, q0q1, q0q2, q0q3, q1q1, q1q2, q1q3, q2q2, q2q3, q3q3;
 
-        /*
+
         float ax = data[0]*2.0f/32768.0f; // 2 g full range for accelerometer
         float ay = data[1]*2.0f/32768.0f; //<>//
         float az = data[2]*2.0f/32768.0f;
@@ -102,7 +104,7 @@ public class AHRS {
         mmz = mz;
 
 
-        /*
+
 
 
         // Rate of change of quaternion from gyroscope
@@ -189,14 +191,14 @@ public class AHRS {
         q[3] *= recipNorm;
 
         yaw = (float)Math.atan2(2.0f * (q[1] * q[2] + q[0] * q[3]), q[0] * q[0] + q[1] * q[1] - q[2] * q[2] - q[3] * q[3]);
-        //pitch = (float)-Math.asin(2.0f * (q[1] * q[3] - q[0] * q[2]));
-        //roll  = (float)Math.atan2(2.0f * (q[0] * q[1] + q[2] * q[3]), q[0] * q[0] - q[1] * q[1] - q[2] * q[2] + q[3] * q[3]);
+        pitch = (float)-Math.asin(2.0f * (q[1] * q[3] - q[0] * q[2]));
+        roll  = (float)Math.atan2(2.0f * (q[0] * q[1] + q[2] * q[3]), q[0] * q[0] - q[1] * q[1] - q[2] * q[2] + q[3] * q[3]);
 
-        //pitch *= 180.0f / Math.PI;
+        pitch *= 180.0f / Math.PI;
         yaw   *= 180.0f / Math.PI;
-        //roll  *= 180.0f / Math.PI;
+        roll  *= 180.0f / Math.PI;
 
-        */
+
     }
 
     private static float invSqrt(float x){
