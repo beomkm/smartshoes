@@ -84,6 +84,8 @@ public class AHRS {
         float gx = data[3]*250.0f/32768.0f; // 250 deg/s full range for gyroscope
         float gy = data[4]*250.0f/32768.0f;
         float gz = data[5]*250.0f/32768.0f;
+
+        /*
         float mx = data[6]*10.0f*1229.0f/4096.0f + tx; // milliGauss (1229 microTesla per 2^12 bits, 10 mG per microTesla)
         //float my = data[7]*10.0f*1229.0f/4096.0f + 70.0f; // apply calibration offsets in mG that correspond to your environment and magnetometer
         float my = data[7]*10.0f*1229.0f/4096.0f + 70.0f; // apply calibration offsets in mG that correspond to your environment and magnetometer

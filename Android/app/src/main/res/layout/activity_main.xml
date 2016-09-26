@@ -11,14 +11,6 @@
     android:orientation="vertical"
     tools:context="kr.ac.koreatech.hilab.graduation.MainActivity">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="중지"
-        android:id="@+id/stopBtn"
-        android:gravity="center"
-        android:onClick="onClick"/>
-
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -60,6 +52,16 @@
         android:layout_alignParentStart="true"
         android:layout_marginTop="50dp" />
 
+    <Button
+        android:layout_width="123dp"
+        android:layout_height="wrap_content"
+        android:text="다음"
+        android:id="@+id/stopBtn"
+        android:gravity="center"
+        android:onClick="onClick"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="-60dp" />
+
     <ImageView
         android:layout_width="110dp"
         android:layout_height="58dp"
@@ -69,7 +71,7 @@
         android:layout_below="@+id/linearGraph"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="-80dp" />
+        android:layout_marginTop="-130dp" />
 
     <EditText
         android:layout_width="wrap_content"

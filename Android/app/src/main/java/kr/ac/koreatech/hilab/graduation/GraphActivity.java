@@ -130,7 +130,7 @@ public class GraphActivity extends Activity {
 
         // set text setting
         vo.setTextColor(Color.WHITE);
-        vo.setTextSize(20);
+        vo.setTextSize(40);
 
         // set circle center move X ,Y
         vo.setCenterX(0);
