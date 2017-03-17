@@ -2,13 +2,9 @@
 # 2016 Capstone Design
 
 ## Contributors (sorted by nickname):
-
 #### [@EunBeeJo](https://github.com/eunbeejo)
-
 #### [@jmpark0819](https://github.com/jmpark0819)
-
 #### [@tibyte](https://github.com/tibyte)
-
 #### [@wow0554](https://github.com/wow0554)
 
 
